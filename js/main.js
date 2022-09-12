@@ -1,7 +1,23 @@
+var $form = document.querySelector('form');
 var $entryImage = document.querySelector('.entry-image');
 var $photoUrl = document.querySelector('.photo-url');
 
+$form.addEventListener('submit', submitEntryForm);
 $photoUrl.addEventListener('input', updateSrc);
+
+function submitEntryForm(event) {
+  event.preventDefault();
+  var formDataObj = {};
+
+  formDataObj.title = $form.elements.title.value;
+  formDataObj.url = $form.elements.url.value;
+  formDataObj.notes = $form.elements.notes.value;
+  formDataObj.id = data.nextEntryId;
+  data.nextEntryId++;
+  data.entries.unshift(formDataObj);
+  $entryImage.setAttribute('src', 'images/placeholder-image-square.jpg');
+  $form.reset();
+}
 
 // Sample image: https://uploads0.wikiart.org/00339/images/leonardo-da-vinci/mona-lisa-c-1503-1519.jpg
 function updateSrc(event) {
