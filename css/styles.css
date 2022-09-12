@@ -10,7 +10,8 @@ h3,
 h4,
 h5,
 h6,
-form {
+form,
+button {
   margin: 0;
   font-family: Montserrat, sans-serif;
 }
@@ -52,24 +53,38 @@ img {
   width: 100%;
 }
 
-form h2 {
-  font-size: 2.7rem;
-  padding: 1.75rem 0;
-}
-
 label {
   font-size: 1.6rem;
   font-weight: 700;
 }
 
 button {
-  font-family: inherit;
   font-size: 1.5rem;
   background-color: #562b80;
   color: rgb(241, 241, 241);
   border-radius: 5px;
   border: none;
   padding: 0.6rem 1.5rem;
+}
+
+p {
+  font-size: 1.75rem;
+}
+
+h3 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+h2 {
+  font-size: 2.4rem;
+  font-weight: 600;
+  padding: 1.6rem 0 2rem;
+}
+
+h5 {
+  font-weight: 500;
+  font-size: 1.25rem;
 }
 
 .bar {
@@ -80,8 +95,14 @@ button {
 .bar h4 {
   color: #ebebeb;
   font-weight: 400;
-  font-size: 1.75rem;
-  padding: 1.5rem 0;
+  font-size: 1.6rem;
+  padding: 1.2rem 0;
+}
+
+.entries-ref {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
 }
 
 .entry-image {
@@ -89,6 +110,11 @@ button {
   height: 390px;
   border-radius: 5px;
   margin-bottom: 2rem;
+}
+
+.image-shrink {
+  object-position: 0 -20px;
+  height: 330px;
 }
 
 .photo-url {
@@ -100,9 +126,21 @@ button {
   margin-bottom: 2rem;
 }
 
-.button-container {
+.save-button-container {
   text-align: right;
   margin-bottom: 2rem;
+}
+
+.new-button-container {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.new-button-container > button {
+  font-size: 1.25rem;
+  font-weight: 500;
+  padding: 0.5rem 0.9rem;
 }
 
 .pl-0 {
