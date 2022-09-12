@@ -17,4 +17,9 @@ function submitEntryForm(event) {
   formDataObj.title = $form.elements.title.value;
   formDataObj.url = $form.elements.url.value;
   formDataObj.notes = $form.elements.notes.value;
+  formDataObj.id = data.nextEntryId;
+  data.nextEntryId++;
+  data.entries.push(formDataObj);
+  $entryImage.setAttribute('src', 'images/placeholder-image-square.jpg');
+  $form.reset();
 }
