@@ -10,6 +10,7 @@ $form.addEventListener('submit', submitEntryForm);
 
 window.addEventListener('beforeunload', addToLocalStorage);
 
+// Sample image: https://uploads0.wikiart.org/00339/images/leonardo-da-vinci/mona-lisa-c-1503-1519.jpg
 function updateSrc(event) {
   if (isValidUrl(event.target.value)) {
     $entryImage.setAttribute('src', event.target.value);
