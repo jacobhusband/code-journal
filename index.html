@@ -15,7 +15,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@100;200;300;400;500;600&family=Montserrat:wght@100;200;300;400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@100;200;300;400;500;600&family=Montserrat:wght@100;200;300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/reset.css" />
@@ -32,8 +32,41 @@
     </header>
     <main>
       <div class="container">
-        <div data-view="entry-form">
-          <form action=""></form>
+        <div data-view="entry-form" class="form-container">
+          <form action="">
+            <h2>New Entry</h2>
+            <div class="row">
+              <div class="column-half">
+                <img
+                  class="entry-image"
+                  src="images/placeholder-image-square.jpg"
+                  alt="Placeholder Image"
+                />
+              </div>
+              <div class="column-half">
+                <label for="entry-title">Title</label>
+                <div class="input-container">
+                  <input name="entry-title" type="text" />
+                </div>
+                <label for="photo-url">Photo URL</label>
+                <div class="input-container photo-url">
+                  <input name="photo-url" type="text" />
+                </div>
+                <label class="notes" for="notes">Notes</label>
+                <div class="textarea-container">
+                  <textarea
+                    name="notes"
+                    id="notes"
+                    cols="50"
+                    rows="6"
+                  ></textarea>
+                </div>
+                <div class="button-container">
+                  <button>SAVE</button>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </main>

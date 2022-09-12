@@ -1,6 +1,7 @@
 body {
   margin: 0;
   font-family: "Barlow Condensed", sans-serif;
+  background-color: #f0f0f0;
 }
 
 h1,
@@ -14,14 +15,92 @@ form {
   font-family: Montserrat, sans-serif;
 }
 
+input {
+  border-style: none;
+  border: 1px solid #a3a3a3;
+  width: 100%;
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+  font-size: 2rem;
+  padding: 0.75rem 1rem;
+}
+
+textarea {
+  resize: none;
+  width: 100%;
+  font-family: inherit;
+  font-size: 1.5rem;
+  line-height: 1.5;
+  letter-spacing: -0.3px;
+  padding: 0.5rem 0.75rem;
+}
+
+form,
+label,
+input,
+textarea {
+  color: rgb(24, 24, 24);
+  border-radius: 5px;
+}
+
+input:focus,
+textarea:focus {
+  outline: 3px solid #562b80;
+}
+
+img {
+  width: 100%;
+}
+
+form h2 {
+  font-size: 2.7rem;
+  padding: 1.75rem 0;
+}
+
+label {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+button {
+  font-family: inherit;
+  font-size: 1.5rem;
+  background-color: #562b80;
+  color: rgb(241, 241, 241);
+  border-radius: 5px;
+  border: none;
+  padding: 0.6rem 1.5rem;
+}
+
 .bar {
   color: white;
   background-color: #562b80;
 }
 
 .bar h4 {
-  color: #dfdfdf;
+  color: #ebebeb;
   font-weight: 400;
-  font-size: 0.85rem;
-  padding: 0.5rem;
+  font-size: 1.75rem;
+  padding: 1.5rem 0;
+}
+
+.entry-image {
+  object-fit: cover;
+  height: 390px;
+  border-radius: 5px;
+  margin-bottom: 2rem;
+}
+
+.photo-url {
+  margin-bottom: -0.5rem;
+}
+
+.textarea-container {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+.button-container {
+  text-align: right;
+  margin-bottom: 40rem;
 }
