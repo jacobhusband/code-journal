@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: "Barlow Condensed", sans-serif;
+  font-family: Karla, sans-serif;
   background-color: #f0f0f0;
 }
 
@@ -13,7 +13,7 @@ h6,
 form,
 button {
   margin: 0;
-  font-family: Montserrat, sans-serif;
+  font-family: Inconsolata, sans-serif;
 }
 
 input {
@@ -68,7 +68,9 @@ button {
 }
 
 p {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
+  word-spacing: 0.25rem;
+  line-height: 1.4;
 }
 
 h3 {
@@ -84,7 +86,7 @@ h2 {
 
 h5 {
   font-weight: 500;
-  font-size: 1.25rem;
+  font-size: 1.4rem;
 }
 
 .bar {
@@ -102,7 +104,7 @@ h5 {
 .entries-ref {
   display: flex;
   align-items: center;
-  margin-left: 1rem;
+  margin-left: 1.5rem;
 }
 
 .entry-image {
