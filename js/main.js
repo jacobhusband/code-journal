@@ -2,17 +2,50 @@ var $form = document.querySelector('form');
 var $entryImage = document.querySelector('.entry-image');
 var $photoUrl = document.querySelector('.photo-url');
 var $ul = document.querySelector('ul.entry-list');
+var $entryNav = document.querySelector('h5.entry-nav');
+var $entryForm = document.querySelector('[data-view="entry-form"]');
+var $entries = document.querySelector('[data-view="entries"]');
+var $newButton = document.querySelector(
+  '.new-button-container'
+).firstElementChild;
+
+if (data.view === 'entry-form') {
+  showEntryForm();
+} else if (data.view === 'entries') {
+  goToEntries();
+}
 
 $form.addEventListener('submit', submitEntryForm);
 $photoUrl.addEventListener('input', updateSrc);
+$entryNav.addEventListener('click', goToEntries);
+$newButton.addEventListener('click', showEntryForm);
+window.addEventListener('DOMContentLoaded', showEntries);
 
-var entry = createEntryElements({
-  title: 'Mona Lisa',
-  url: 'https://uploads0.wikiart.org/00339/images/leonardo-da-vinci/mona-lisa-c-1503-1519.jpg',
-  notes: 'Hiba Diba Hoppa Hoopa'
-});
+function showEntryForm(event) {
+  $entryForm.className = 'form-container';
+  $entries.className = 'hidden';
+  data.view = 'entry-form';
+}
 
-$ul.appendChild(entry);
+function goToEntries(event) {
+  $entryForm.className = 'form-container hidden';
+  $entries.className = '';
+  data.view = 'entries';
+  showEntries();
+}
+
+function showEntries() {
+  var li = $ul.lastElementChild;
+
+  while (li) {
+    $ul.removeChild(li);
+    li = $ul.lastElementChild;
+  }
+
+  data.entries.forEach(entry => {
+    $ul.appendChild(createEntryElements(entry));
+  });
+}
 
 function submitEntryForm(event) {
   event.preventDefault();
@@ -26,9 +59,11 @@ function submitEntryForm(event) {
   data.entries.unshift(formDataObj);
   $entryImage.setAttribute('src', 'images/placeholder-image-square.jpg');
   $form.reset();
+  goToEntries();
 }
 
 // Sample image: https://uploads0.wikiart.org/00339/images/leonardo-da-vinci/mona-lisa-c-1503-1519.jpg
+// Sample image 2: https://upload.wikimedia.org/wikipedia/en/7/7d/Harold_%28film%29.jpg
 function updateSrc(event) {
   if (isValidUrl(event.target.value)) {
     $entryImage.setAttribute('src', event.target.value);
@@ -74,6 +109,15 @@ function elementCreator(tagname, attributes, children = []) {
     for (var attribute in attributes) {
       if (attribute === 'innerText') {
         element.textContent = attributes[attribute];
+      } else if (attribute === 'src') {
+        if (isValidUrl(attributes[attribute])) {
+          element.setAttribute(attribute, attributes[attribute]);
+        } else {
+          element.setAttribute(
+            attribute,
+            'images/placeholder-image-square.jpg'
+          );
+        }
       } else {
         element.setAttribute(attribute, attributes[attribute]);
       }

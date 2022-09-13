@@ -7,14 +7,14 @@ var data = {
   nextEntryId: 1
 };
 
-pushLocalStorage();
+if (localStorage.getItem('data')) {
+  pushLocalStorage();
+}
 
 window.addEventListener('beforeunload', addToLocalStorage);
 
 function addToLocalStorage(event) {
-  if (data) {
-    localStorage.setItem('data', JSON.stringify(data));
-  }
+  localStorage.setItem('data', JSON.stringify(data));
 }
 
 function pushLocalStorage() {

@@ -152,6 +152,25 @@ h5 {
   padding: 0.5rem 0.9rem;
 }
 
+.entry-nav {
+  padding: 0.5rem;
+  border-radius: 5px;
+}
+
+.new-entry,
+.entry-nav {
+  cursor: pointer;
+}
+
+.new-entry:hover,
+.entry-nav:hover {
+  background-color: #6a3b98;
+}
+
+.hidden {
+  display: none;
+}
+
 .pl-0 {
   padding-left: 0;
 }
