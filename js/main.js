@@ -13,6 +13,8 @@ var $deleteEntry = $form.querySelector('.delete-entry');
 var $modalConfirmation = $entryForm.querySelector(
   '.confirmation-modal-container'
 );
+var $searchIcon = $entries.querySelector('.search-container');
+var $searchBox = $entries.querySelector('#entry-search');
 
 if (data.view === 'entry-form') {
   showEntryForm();
@@ -20,6 +22,7 @@ if (data.view === 'entry-form') {
   goToEntries();
 }
 
+$searchIcon.addEventListener('click', showSearchBox);
 $form.addEventListener('submit', submitEntryForm);
 $photoUrl.addEventListener('input', updateSrc);
 $entryNav.addEventListener('click', goToEntries);
@@ -28,6 +31,11 @@ window.addEventListener('DOMContentLoaded', showEntries);
 $ul.addEventListener('click', showEditEntry);
 $deleteEntry.addEventListener('click', showConfirmationModal);
 $modalConfirmation.addEventListener('click', handleModalAction);
+
+function showSearchBox(event) {
+  $searchBox.className = '';
+  $searchBox.focus();
+}
 
 function handleModalAction(event) {
   if (event.target.matches('.cancel')) {
