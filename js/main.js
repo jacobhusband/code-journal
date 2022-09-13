@@ -197,6 +197,11 @@ function createEntryElements(entry) {
       elementCreator('p', {
         innerText: entry.notes
       })
+    ]),
+    elementCreator('div', { class: 'column-full' }, [
+      elementCreator('div', { class: 'tag-container' }, [
+        elementCreator('p', { innerText: 'Tag +', class: 'add-tag-text' })
+      ])
     ])
   ]);
   return $li;
