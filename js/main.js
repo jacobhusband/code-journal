@@ -9,6 +9,7 @@ var $newButton = document.querySelector(
   '.new-button-container'
 ).firstElementChild;
 var $newEntryText = $form.querySelector('h2');
+var $deleteEntry = $form.querySelector('.delete-entry');
 
 if (data.view === 'entry-form') {
   showEntryForm();
@@ -41,6 +42,7 @@ function checkForEditing(event) {
     $entryImage.setAttribute('src', data.editing.url);
 
     $newEntryText.textContent = 'Edit Entry';
+    $deleteEntry.className = 'delete-entry';
   }
 }
 
@@ -92,6 +94,7 @@ function submitEntryForm(event) {
     data.editing.notes = $form.elements.notes.value;
   }
 
+  $deleteEntry.className = 'delete-entry hidden';
   $form.reset();
   goToEntries();
 }
