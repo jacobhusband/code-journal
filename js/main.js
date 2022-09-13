@@ -25,6 +25,12 @@ $ul.addEventListener('click', checkForEditing);
 function checkForEditing(event) {
   if (event.target.matches('.edit-icon')) {
     showEntryForm();
+    var id = parseInt(event.target.closest('[data-entry-id]').dataset.entryId);
+    data.entries.forEach(entry => {
+      if (entry.id === id) {
+        data.editing = entry;
+      }
+    });
   }
 }
 
@@ -92,7 +98,7 @@ function isValidUrl(urlString) {
 }
 
 function createEntryElements(entry) {
-  var $li = elementCreator('li', { class: 'row' }, [
+  var $li = elementCreator('li', { class: 'row', 'data-entry-id': entry.id }, [
     elementCreator('div', { class: 'column-half' }, [
       elementCreator('img', {
         class: 'entry-image image-shrink',
