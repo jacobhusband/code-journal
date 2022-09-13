@@ -139,10 +139,17 @@ h5 {
   margin-bottom: 2rem;
 }
 
+.search-container {
+  align-self: center;
+  margin-left: auto;
+  margin-right: 1rem;
+  margin-top: 0.25rem;
+  width: 2rem;
+}
+
 .new-button-container {
   display: flex;
   align-items: center;
-  margin-left: auto;
 }
 
 .new-button-container > button {
