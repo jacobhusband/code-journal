@@ -27,11 +27,13 @@ function checkForEditing(event) {
   if (event.target.matches('.edit-icon')) {
     showEntryForm();
     var id = parseInt(event.target.closest('[data-entry-id]').dataset.entryId);
-    data.entries.forEach(entry => {
-      if (entry.id === id) {
-        data.editing = entry;
+
+    for (var i = 0; i < data.entries.length; i++) {
+      if (data.entries[i].id === id) {
+        data.editing = data.entries[i];
+        break;
       }
-    });
+    }
 
     $form.elements.title.value = data.editing.title;
     $form.elements.url.value = data.editing.url;
@@ -43,19 +45,13 @@ function checkForEditing(event) {
 }
 
 function showEntryForm(event) {
-  clearEntryForm();
+  $form.reset();
   data.editing = null;
   $entryImage.setAttribute('src', 'images/placeholder-image-square.jpg');
   $entryForm.className = 'form-container';
   $entries.className = 'hidden';
   data.view = 'entry-form';
   $newEntryText.textContent = 'New Entry';
-}
-
-function clearEntryForm() {
-  $form.elements.title.value = '';
-  $form.elements.url.value = '';
-  $form.elements.notes.value = '';
 }
 
 function goToEntries(event) {
