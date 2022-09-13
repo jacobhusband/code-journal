@@ -15,7 +15,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@100;200;300;400;500;600&family=Montserrat:wght@100;200;300;400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400;500;600;700;800&family=Karla:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/reset.css" />
@@ -28,7 +28,12 @@
         <div class="container">
           <div class="row">
             <div class="column-full">
-              <h4>Code Journal</h4>
+              <div class="row">
+                <h4>Code Journal</h4>
+                <div class="entries-ref">
+                  <h5 class="entry-nav">Entries</h5>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -74,12 +79,25 @@
                     required
                   ></textarea>
                 </div>
-                <div class="button-container">
+                <div class="save-button-container">
                   <button>SAVE</button>
                 </div>
               </div>
             </div>
           </form>
+        </div>
+        <div data-view="entries" class="hidden">
+          <div class="row">
+            <div class="column-full">
+              <div class="row">
+                <h2>Entries</h2>
+                <div class="new-button-container">
+                  <button class="new-entry">NEW</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ul class="entry-list"></ul>
         </div>
       </div>
     </main>
