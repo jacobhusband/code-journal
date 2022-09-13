@@ -31,6 +31,10 @@ function checkForEditing(event) {
         data.editing = entry;
       }
     });
+
+    $form.elements.title.value = data.editing.title;
+    $form.elements.url.value = data.editing.url;
+    $form.elements.notes.value = data.editing.notes;
   }
 }
 
