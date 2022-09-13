@@ -167,8 +167,20 @@ h5 {
   background-color: #6a3b98;
 }
 
+.edit-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2rem;
+  margin-right: 0.5rem;
+}
+
 .hidden {
   display: none;
+}
+
+.pos-rel {
+  position: relative;
 }
 
 .pl-0 {

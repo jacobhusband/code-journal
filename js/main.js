@@ -93,8 +93,12 @@ function createEntryElements(entry) {
         alt: `Entry Image ${entry.id}`
       })
     ]),
-    elementCreator('div', { class: 'column-half' }, [
+    elementCreator('div', { class: 'column-half pos-rel' }, [
       elementCreator('h3', { innerText: entry.title }),
+      elementCreator('img', {
+        src: 'images/pencil.png',
+        class: 'edit-icon'
+      }),
       elementCreator('p', {
         innerText: entry.notes
       })
@@ -110,7 +114,10 @@ function elementCreator(tagname, attributes, children = []) {
       if (attribute === 'innerText') {
         element.textContent = attributes[attribute];
       } else if (attribute === 'src') {
-        if (isValidUrl(attributes[attribute])) {
+        if (
+          isValidUrl(attributes[attribute]) ||
+          attributes[attribute] === 'images/pencil.png'
+        ) {
           element.setAttribute(attribute, attributes[attribute]);
         } else {
           element.setAttribute(
