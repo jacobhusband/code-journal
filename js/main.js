@@ -9,6 +9,10 @@ var $newButton = document.querySelector(
   '.new-button-container'
 ).firstElementChild;
 var $newEntryText = $form.querySelector('h2');
+var $deleteEntry = $form.querySelector('.delete-entry');
+var $modalConfirmation = $entryForm.querySelector(
+  '.confirmation-modal-container'
+);
 
 if (data.view === 'entry-form') {
   showEntryForm();
@@ -21,9 +25,30 @@ $photoUrl.addEventListener('input', updateSrc);
 $entryNav.addEventListener('click', goToEntries);
 $newButton.addEventListener('click', showEntryForm);
 window.addEventListener('DOMContentLoaded', showEntries);
-$ul.addEventListener('click', checkForEditing);
+$ul.addEventListener('click', showEditEntry);
+$deleteEntry.addEventListener('click', showConfirmationModal);
+$modalConfirmation.addEventListener('click', handleModalAction);
 
-function checkForEditing(event) {
+function handleModalAction(event) {
+  if (event.target.matches('.cancel')) {
+    $modalConfirmation.className = 'confirmation-modal-container hidden';
+  } else if (event.target.matches('.confirm')) {
+    $modalConfirmation.className = 'confirmation-modal-container hidden';
+    for (var i = 0; i < data.entries.length; i++) {
+      if (data.entries[i].id === data.editing.id) {
+        data.entries.splice(i, 1);
+        data.editing = null;
+        goToEntries();
+      }
+    }
+  }
+}
+
+function showConfirmationModal(event) {
+  $modalConfirmation.className = 'confirmation-modal-container';
+}
+
+function showEditEntry(event) {
   if (event.target.matches('.edit-icon')) {
     showEntryForm();
     var id = parseInt(event.target.closest('[data-entry-id]').dataset.entryId);
@@ -41,6 +66,7 @@ function checkForEditing(event) {
     $entryImage.setAttribute('src', data.editing.url);
 
     $newEntryText.textContent = 'Edit Entry';
+    $deleteEntry.className = 'delete-entry';
   }
 }
 
@@ -70,7 +96,9 @@ function showEntries() {
   }
 
   data.entries.forEach(entry => {
-    $ul.appendChild(createEntryElements(entry));
+    if (entry) {
+      $ul.appendChild(createEntryElements(entry));
+    }
   });
 }
 
@@ -92,6 +120,7 @@ function submitEntryForm(event) {
     data.editing.notes = $form.elements.notes.value;
   }
 
+  $deleteEntry.className = 'delete-entry hidden';
   $form.reset();
   goToEntries();
 }
