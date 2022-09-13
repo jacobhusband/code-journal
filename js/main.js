@@ -8,6 +8,7 @@ var $entries = document.querySelector('[data-view="entries"]');
 var $newButton = document.querySelector(
   '.new-button-container'
 ).firstElementChild;
+var $newEntryText = $form.querySelector('h2');
 
 if (data.view === 'entry-form') {
   showEntryForm();
@@ -20,11 +21,37 @@ $photoUrl.addEventListener('input', updateSrc);
 $entryNav.addEventListener('click', goToEntries);
 $newButton.addEventListener('click', showEntryForm);
 window.addEventListener('DOMContentLoaded', showEntries);
+$ul.addEventListener('click', checkForEditing);
+
+function checkForEditing(event) {
+  if (event.target.matches('.edit-icon')) {
+    showEntryForm();
+    var id = parseInt(event.target.closest('[data-entry-id]').dataset.entryId);
+
+    for (var i = 0; i < data.entries.length; i++) {
+      if (data.entries[i].id === id) {
+        data.editing = data.entries[i];
+        break;
+      }
+    }
+
+    $form.elements.title.value = data.editing.title;
+    $form.elements.url.value = data.editing.url;
+    $form.elements.notes.value = data.editing.notes;
+    $entryImage.setAttribute('src', data.editing.url);
+
+    $newEntryText.textContent = 'Edit Entry';
+  }
+}
 
 function showEntryForm(event) {
+  $form.reset();
+  data.editing = null;
+  $entryImage.setAttribute('src', 'images/placeholder-image-square.jpg');
   $entryForm.className = 'form-container';
   $entries.className = 'hidden';
   data.view = 'entry-form';
+  $newEntryText.textContent = 'New Entry';
 }
 
 function goToEntries(event) {
@@ -49,15 +76,22 @@ function showEntries() {
 
 function submitEntryForm(event) {
   event.preventDefault();
-  var formDataObj = {};
 
-  formDataObj.title = $form.elements.title.value;
-  formDataObj.url = $form.elements.url.value;
-  formDataObj.notes = $form.elements.notes.value;
-  formDataObj.id = data.nextEntryId;
-  data.nextEntryId++;
-  data.entries.unshift(formDataObj);
-  $entryImage.setAttribute('src', 'images/placeholder-image-square.jpg');
+  if (!data.editing) {
+    var formDataObj = {};
+    formDataObj.title = $form.elements.title.value;
+    formDataObj.url = $form.elements.url.value;
+    formDataObj.notes = $form.elements.notes.value;
+    formDataObj.id = data.nextEntryId;
+    data.nextEntryId++;
+    data.entries.unshift(formDataObj);
+    $entryImage.setAttribute('src', 'images/placeholder-image-square.jpg');
+  } else {
+    data.editing.title = $form.elements.title.value;
+    data.editing.url = $form.elements.url.value;
+    data.editing.notes = $form.elements.notes.value;
+  }
+
   $form.reset();
   goToEntries();
 }
@@ -85,7 +119,7 @@ function isValidUrl(urlString) {
 }
 
 function createEntryElements(entry) {
-  var $li = elementCreator('li', { class: 'row' }, [
+  var $li = elementCreator('li', { class: 'row', 'data-entry-id': entry.id }, [
     elementCreator('div', { class: 'column-half' }, [
       elementCreator('img', {
         class: 'entry-image image-shrink',
@@ -93,8 +127,12 @@ function createEntryElements(entry) {
         alt: `Entry Image ${entry.id}`
       })
     ]),
-    elementCreator('div', { class: 'column-half' }, [
+    elementCreator('div', { class: 'column-half pos-rel' }, [
       elementCreator('h3', { innerText: entry.title }),
+      elementCreator('img', {
+        src: 'images/pencil.png',
+        class: 'edit-icon'
+      }),
       elementCreator('p', {
         innerText: entry.notes
       })
@@ -110,7 +148,10 @@ function elementCreator(tagname, attributes, children = []) {
       if (attribute === 'innerText') {
         element.textContent = attributes[attribute];
       } else if (attribute === 'src') {
-        if (isValidUrl(attributes[attribute])) {
+        if (
+          isValidUrl(attributes[attribute]) ||
+          attributes[attribute] === 'images/pencil.png'
+        ) {
           element.setAttribute(attribute, attributes[attribute]);
         } else {
           element.setAttribute(
