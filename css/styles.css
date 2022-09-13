@@ -180,6 +180,52 @@ h5 {
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
   letter-spacing: -1px;
+  cursor: pointer;
+}
+
+.confirmation-modal-container {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.confirmation-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  width: 25rem;
+  height: 10rem;
+  background-color: white;
+  border-radius: 5px;
+  padding: 1rem;
+}
+
+.confirmation-modal > p {
+  font-weight: 500;
+  letter-spacing: -1px;
+  word-spacing: 1px;
+}
+
+.cancel {
+  color: rgb(32, 32, 32);
+  background-color: rgb(194, 194, 194);
+}
+
+.confirm {
+  color: rgb(242, 242, 242);
+  background-color: rgb(230, 0, 0);
+}
+
+.cancel:hover,
+.confirm:hover {
+  filter: brightness(120%);
 }
 
 .hidden {
