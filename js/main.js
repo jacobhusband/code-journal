@@ -13,6 +13,8 @@ var $deleteEntry = $form.querySelector('.delete-entry');
 var $modalConfirmation = $entryForm.querySelector(
   '.confirmation-modal-container'
 );
+var $searchIcon = $entries.querySelector('.search-container');
+var $searchBox = $entries.querySelector('#entry-search');
 
 if (data.view === 'entry-form') {
   showEntryForm();
@@ -20,6 +22,8 @@ if (data.view === 'entry-form') {
   goToEntries();
 }
 
+$searchBox.addEventListener('input', filterEntries);
+$searchIcon.addEventListener('click', showSearchBox);
 $form.addEventListener('submit', submitEntryForm);
 $photoUrl.addEventListener('input', updateSrc);
 $entryNav.addEventListener('click', goToEntries);
@@ -28,6 +32,34 @@ window.addEventListener('DOMContentLoaded', showEntries);
 $ul.addEventListener('click', showEditEntry);
 $deleteEntry.addEventListener('click', showConfirmationModal);
 $modalConfirmation.addEventListener('click', handleModalAction);
+
+function filterEntries(event) {
+  var re = new RegExp(event.target.value, 'i');
+  for (var i = 0; i < data.entries.length; i++) {
+    if (!re.test(data.entries[i].title) || !re.test(data.entries[i].notes)) {
+      // go through each li element id and if it does not match
+      // the data entry id then give it a hidden class
+      for (var j = 0; j < $ul.children.length; j++) {
+        if (parseInt($ul.children[j].dataset.entryId) === data.entries[i].id) {
+          $ul.children[j].className = 'hidden';
+        }
+      }
+    }
+
+    if (re.test(data.entries[i].title) || re.test(data.entries[i].notes)) {
+      for (var k = 0; k < $ul.children.length; k++) {
+        if (parseInt($ul.children[k].dataset.entryId) === data.entries[i].id) {
+          $ul.children[k].className = 'row';
+        }
+      }
+    }
+  }
+}
+
+function showSearchBox(event) {
+  $searchBox.className = '';
+  $searchBox.focus();
+}
 
 function handleModalAction(event) {
   if (event.target.matches('.cancel')) {
