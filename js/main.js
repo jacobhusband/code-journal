@@ -8,6 +8,7 @@ var $entries = document.querySelector('[data-view="entries"]');
 var $newButton = document.querySelector(
   '.new-button-container'
 ).firstElementChild;
+var $newEntryText = $form.querySelector('h2');
 
 if (data.view === 'entry-form') {
   showEntryForm();
@@ -35,13 +36,26 @@ function checkForEditing(event) {
     $form.elements.title.value = data.editing.title;
     $form.elements.url.value = data.editing.url;
     $form.elements.notes.value = data.editing.notes;
+    $entryImage.setAttribute('src', data.editing.url);
+
+    $newEntryText.textContent = 'Edit Entry';
   }
 }
 
 function showEntryForm(event) {
+  clearEntryForm();
+  data.editing = null;
+  $entryImage.setAttribute('src', 'images/placeholder-image-square.jpg');
   $entryForm.className = 'form-container';
   $entries.className = 'hidden';
   data.view = 'entry-form';
+  $newEntryText.textContent = 'New Entry';
+}
+
+function clearEntryForm() {
+  $form.elements.title.value = '';
+  $form.elements.url.value = '';
+  $form.elements.notes.value = '';
 }
 
 function goToEntries(event) {
@@ -66,15 +80,22 @@ function showEntries() {
 
 function submitEntryForm(event) {
   event.preventDefault();
-  var formDataObj = {};
 
-  formDataObj.title = $form.elements.title.value;
-  formDataObj.url = $form.elements.url.value;
-  formDataObj.notes = $form.elements.notes.value;
-  formDataObj.id = data.nextEntryId;
-  data.nextEntryId++;
-  data.entries.unshift(formDataObj);
-  $entryImage.setAttribute('src', 'images/placeholder-image-square.jpg');
+  if (!data.editing) {
+    var formDataObj = {};
+    formDataObj.title = $form.elements.title.value;
+    formDataObj.url = $form.elements.url.value;
+    formDataObj.notes = $form.elements.notes.value;
+    formDataObj.id = data.nextEntryId;
+    data.nextEntryId++;
+    data.entries.unshift(formDataObj);
+    $entryImage.setAttribute('src', 'images/placeholder-image-square.jpg');
+  } else {
+    data.editing.title = $form.elements.title.value;
+    data.editing.url = $form.elements.url.value;
+    data.editing.notes = $form.elements.notes.value;
+  }
+
   $form.reset();
   goToEntries();
 }
