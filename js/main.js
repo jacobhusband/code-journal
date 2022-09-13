@@ -20,6 +20,13 @@ $photoUrl.addEventListener('input', updateSrc);
 $entryNav.addEventListener('click', goToEntries);
 $newButton.addEventListener('click', showEntryForm);
 window.addEventListener('DOMContentLoaded', showEntries);
+$ul.addEventListener('click', checkForEditing);
+
+function checkForEditing(event) {
+  if (event.target.matches('.edit-icon')) {
+    showEntryForm();
+  }
+}
 
 function showEntryForm(event) {
   $entryForm.className = 'form-container';
