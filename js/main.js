@@ -112,12 +112,23 @@ function detectEntryClicks(event) {
 function createTag(event) {
   var tag;
   var tagParent = event.target.parentElement;
-  // var id = event.target.closest("li").dataset.entryId;
-  // var span = event.target;
+  var randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+  var id = parseInt(event.target.closest('li').dataset.entryId);
   if (event.key === 'Enter') {
     event.preventDefault();
     event.target.className = 'tag-input hidden';
     tag = createTagElements(event.target.textContent);
+    tag.style.backgroundColor = randomColor;
+    for (var i = 0; i < data.entries.length; i++) {
+      if (data.entries[i].id === id) {
+        data.entries[i].tags.push({
+          color: randomColor,
+          text: event.target.textContent
+        });
+
+        break;
+      }
+    }
     tagParent.appendChild(tag);
     event.target.parentElement.parentElement.firstChild.className = 'add tag';
   }
@@ -146,6 +157,9 @@ function goToEntries(event) {
 
 function showEntries() {
   var li = $ul.lastElementChild;
+  var entryElement;
+  var tagContainer;
+  var $tag;
 
   while (li) {
     $ul.removeChild(li);
@@ -154,7 +168,16 @@ function showEntries() {
 
   data.entries.forEach(entry => {
     if (entry) {
-      $ul.appendChild(createEntryElements(entry));
+      entryElement = createEntryElements(entry);
+      if (entry.tags) {
+        tagContainer = entryElement.querySelector('.tag-container');
+        entry.tags.forEach(tag => {
+          $tag = createTagElements(tag.text);
+          $tag.style.backgroundColor = tag.color;
+          tagContainer.appendChild($tag);
+        });
+      }
+      $ul.appendChild(entryElement);
     }
   });
 }
@@ -168,6 +191,7 @@ function submitEntryForm(event) {
     formDataObj.url = $form.elements.url.value;
     formDataObj.notes = $form.elements.notes.value;
     formDataObj.id = data.nextEntryId;
+    formDataObj.tags = [];
     data.nextEntryId++;
     data.entries.unshift(formDataObj);
     $entryImage.setAttribute('src', 'images/placeholder-image-square.jpg');

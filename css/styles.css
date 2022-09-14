@@ -240,7 +240,8 @@ h5 {
 
 .search-container:hover,
 .edit-icon:hover,
-.new-entry:hover {
+.new-entry:hover,
+.add:hover {
   cursor: pointer;
   border: 1px solid rgb(84, 27, 128);
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
@@ -309,10 +310,6 @@ h5 {
   font-size: 1rem;
   color: white;
   border-radius: 0.5rem;
-}
-
-.add:hover {
-  cursor: pointer;
 }
 
 .tag-input {
