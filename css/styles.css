@@ -141,8 +141,7 @@ h5 {
   margin-bottom: 2rem;
 }
 
-.search-container,
-.filter-container {
+.search-container {
   align-self: center;
   margin-right: 1rem;
   min-width: 2.5rem;
@@ -258,7 +257,6 @@ h5 {
 }
 
 .search-container:hover,
-.filter-container:hover,
 .edit-icon:hover,
 .new-entry:hover,
 .add:hover {
@@ -386,46 +384,6 @@ h5 {
 
 .mt-1r {
   margin-top: 1rem;
-}
-
-.filter-dropdown {
-  top: 2px;
-  left: -200px;
-  z-index: 1;
-}
-
-.filter-search {
-  padding: 0.5rem;
-  padding-right: 2.25rem;
-  margin: 0;
-  font-size: 1rem;
-  width: 12rem;
-  background-image: url("../images/search.png");
-  background-position: 95% 50%;
-  background-size: 1.5rem;
-  background-repeat: no-repeat;
-  border-radius: 0;
-  color: rgb(93, 93, 93);
-}
-
-.filter-search:focus {
-  outline: none;
-}
-
-.filter-tag {
-  background-color: white;
-}
-
-.filter-tag-text {
-  margin: 0;
-  border: 1px solid #a3a3a3;
-  color: rgb(93, 93, 93);
-  font-size: 1rem;
-  padding: 0.25rem 0.5rem;
-}
-
-.mh-200px {
-  max-height: 200px;
 }
 
 @media screen and (min-width: 768px) {
