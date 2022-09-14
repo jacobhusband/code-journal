@@ -310,7 +310,7 @@ function createEntryElements(entry) {
         alt: `Entry Image ${entry.id}`
       })
     ]),
-    elementCreator('div', { class: 'column-half pos-rel mh-330px of-hidden' }, [
+    elementCreator('div', { class: 'column-half pos-rel mh-330px of-scroll' }, [
       elementCreator('h3', { innerText: entry.title }),
       elementCreator('img', {
         src: 'images/pencil.png',
