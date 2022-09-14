@@ -141,8 +141,11 @@ function createTag(event) {
       tag.style.backgroundColor = data.tags[tagInd].color;
     } else {
       tag.style.backgroundColor = randomColor;
-      for (var i = 0; i < data.entries.length; i++) {
-        if (data.entries[i].id === id) {
+    }
+
+    for (var i = 0; i < data.entries.length; i++) {
+      if (data.entries[i].id === id) {
+        if (!tagExists) {
           data.entries[i].tags.push({
             color: randomColor,
             text: event.target.textContent
@@ -151,8 +154,13 @@ function createTag(event) {
             color: randomColor,
             text: event.target.textContent
           });
-          break;
+        } else {
+          data.entries[i].tags.push({
+            color: data.tags[tagInd].color,
+            text: event.target.textContent
+          });
         }
+        break;
       }
     }
 
@@ -203,18 +211,16 @@ function showEntries() {
   }
 
   data.entries.forEach(entry => {
-    if (entry) {
-      entryElement = createEntryElements(entry);
-      if (entry.tags) {
-        tagContainer = entryElement.querySelector('.tag-container');
-        entry.tags.forEach(tag => {
-          $tag = createTagElements(tag.text);
-          $tag.style.backgroundColor = tag.color;
-          tagContainer.appendChild($tag);
-        });
-      }
-      $ul.appendChild(entryElement);
+    entryElement = createEntryElements(entry);
+    if (entry.tags) {
+      tagContainer = entryElement.querySelector('.tag-container');
+      entry.tags.forEach(tag => {
+        $tag = createTagElements(tag.text);
+        $tag.style.backgroundColor = tag.color;
+        tagContainer.appendChild($tag);
+      });
     }
+    $ul.appendChild(entryElement);
   });
 }
 
