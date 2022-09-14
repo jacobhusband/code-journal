@@ -340,6 +340,20 @@ h5 {
   flex-wrap: wrap;
 }
 
+.del-tag {
+  padding: 0;
+  margin-left: 0.5rem;
+  transition: all 0.25s ease-in-out;
+}
+
+.del-tag:hover {
+  cursor: pointer;
+}
+
+.vis-hidden {
+  visibility: hidden;
+}
+
 .of-hidden {
   overflow: hidden;
 }

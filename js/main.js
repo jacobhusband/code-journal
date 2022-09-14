@@ -30,8 +30,74 @@ $entryNav.addEventListener('click', goToEntries);
 $newButton.addEventListener('click', showEntryForm);
 window.addEventListener('DOMContentLoaded', showEntries);
 $ul.addEventListener('click', detectEntryClicks);
+$ul.addEventListener('mouseover', detectEntryHovers);
 $deleteEntry.addEventListener('click', showConfirmationModal);
 $modalConfirmation.addEventListener('click', handleModalAction);
+
+function detectEntryClicks(event) {
+  var id, grandpa, papa, tagText, span;
+  if (event.target.matches('.edit-icon')) {
+    showEntryForm();
+    id = parseInt(event.target.closest('[data-entry-id]').dataset.entryId);
+
+    for (var i = 0; i < data.entries.length; i++) {
+      if (data.entries[i].id === id) {
+        data.editing = data.entries[i];
+        break;
+      }
+    }
+
+    $form.elements.title.value = data.editing.title;
+    $form.elements.url.value = data.editing.url;
+    $form.elements.notes.value = data.editing.notes;
+    $entryImage.setAttribute('src', data.editing.url);
+
+    $newEntryText.textContent = 'Edit Entry';
+    $deleteEntry.className = 'delete-entry';
+  } else if (event.target.matches('.add')) {
+    span = event.target.previousElementSibling;
+    span.textContent = '';
+    span.className = 'tag-input';
+    event.target.className = 'hidden';
+    span.focus();
+    span.addEventListener('keypress', createTag);
+    span.addEventListener('blur', checkEmptySpan);
+  } else if (event.target.matches('span.del-tag')) {
+    grandpa = event.target.parentElement.parentElement;
+    papa = event.target.parentElement;
+    id = parseInt(grandpa.closest('li').dataset.entryId);
+    tagText = papa.textContent.slice(0, papa.textContent.length - 1);
+
+    grandpa.removeChild(papa);
+    removeTagFromData(id, tagText);
+  }
+}
+
+function detectEntryHovers(event) {
+  if (event.target.matches('p.tag') && !event.target.matches('p.add')) {
+    event.target.firstElementChild.className = 'del-tag';
+    event.target.addEventListener('mouseleave', listenForLeave);
+  }
+
+  function listenForLeave(event) {
+    event.target.firstElementChild.className = 'del-tag hidden';
+    event.target.removeEventListener('mouseleave', listenForLeave);
+  }
+}
+
+function removeTagFromData(id, text) {
+  for (var i = 0; i < data.entries.length; i++) {
+    if (data.entries[i].id === id) {
+      for (var j = 0; j < data.entries[i].tags.length; j++) {
+        if (data.entries[i].tags[j].text === text) {
+          data.entries[i].tags.splice(j, 1);
+          break;
+        }
+      }
+      break;
+    }
+  }
+}
 
 function filterEntries(event) {
   var re = new RegExp(event.target.value, 'i');
@@ -82,36 +148,6 @@ function handleModalAction(event) {
 
 function showConfirmationModal(event) {
   $modalConfirmation.className = 'confirmation-modal-container';
-}
-
-function detectEntryClicks(event) {
-  if (event.target.matches('.edit-icon')) {
-    showEntryForm();
-    var id = parseInt(event.target.closest('[data-entry-id]').dataset.entryId);
-
-    for (var i = 0; i < data.entries.length; i++) {
-      if (data.entries[i].id === id) {
-        data.editing = data.entries[i];
-        break;
-      }
-    }
-
-    $form.elements.title.value = data.editing.title;
-    $form.elements.url.value = data.editing.url;
-    $form.elements.notes.value = data.editing.notes;
-    $entryImage.setAttribute('src', data.editing.url);
-
-    $newEntryText.textContent = 'Edit Entry';
-    $deleteEntry.className = 'delete-entry';
-  } else if (event.target.matches('.add')) {
-    var span = event.target.previousElementSibling;
-    span.textContent = '';
-    span.className = 'tag-input';
-    event.target.className = 'hidden';
-    span.focus();
-    span.addEventListener('keypress', createTag);
-    span.addEventListener('blur', checkEmptySpan);
-  }
 }
 
 function checkEmptySpan(event) {
@@ -179,7 +215,9 @@ function getDarkColor() {
 }
 
 function createTagElements(text) {
-  return elementCreator('p', { innerText: text, class: 'tag' });
+  return elementCreator('p', { innerText: text, class: 'tag' }, [
+    elementCreator('span', { class: 'del-tag hidden', innerText: 'x' })
+  ]);
 }
 
 function showEntryForm(event) {
