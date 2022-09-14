@@ -29,7 +29,7 @@ $photoUrl.addEventListener('input', updateSrc);
 $entryNav.addEventListener('click', goToEntries);
 $newButton.addEventListener('click', showEntryForm);
 window.addEventListener('DOMContentLoaded', showEntries);
-$ul.addEventListener('click', showEditEntry);
+$ul.addEventListener('click', detectEntryClicks);
 $deleteEntry.addEventListener('click', showConfirmationModal);
 $modalConfirmation.addEventListener('click', handleModalAction);
 
@@ -80,7 +80,7 @@ function showConfirmationModal(event) {
   $modalConfirmation.className = 'confirmation-modal-container';
 }
 
-function showEditEntry(event) {
+function detectEntryClicks(event) {
   if (event.target.matches('.edit-icon')) {
     showEntryForm();
     var id = parseInt(event.target.closest('[data-entry-id]').dataset.entryId);
@@ -99,7 +99,32 @@ function showEditEntry(event) {
 
     $newEntryText.textContent = 'Edit Entry';
     $deleteEntry.className = 'delete-entry';
+  } else if (event.target.matches('.add')) {
+    var span = event.target.nextElementSibling.firstElementChild;
+    span.textContent = '';
+    span.className = 'tag-input';
+    event.target.className = 'hidden';
+    span.focus();
+    span.addEventListener('keypress', createTag);
   }
+}
+
+function createTag(event) {
+  var tag;
+  var tagParent = event.target.parentElement;
+  // var id = event.target.closest("li").dataset.entryId;
+  // var span = event.target;
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    event.target.className = 'tag-input hidden';
+    tag = createTagElements(event.target.textContent);
+    tagParent.appendChild(tag);
+    event.target.parentElement.parentElement.firstChild.className = 'add tag';
+  }
+}
+
+function createTagElements(text) {
+  return elementCreator('p', { innerText: text, class: 'tag' });
 }
 
 function showEntryForm(event) {
@@ -198,9 +223,16 @@ function createEntryElements(entry) {
         innerText: entry.notes
       })
     ]),
-    elementCreator('div', { class: 'column-full' }, [
+    elementCreator('div', { class: 'column-half' }, [
       elementCreator('div', { class: 'tag-container' }, [
-        elementCreator('p', { innerText: 'Tag +', class: 'add-tag-text' })
+        elementCreator('p', { innerText: 'Tag +', class: 'add tag' }),
+        elementCreator('div', { class: 'tag-input-container' }, [
+          elementCreator('span', {
+            role: 'textbox',
+            contenteditable: '',
+            class: 'tag-input hidden'
+          })
+        ])
       ])
     ])
   ]);
