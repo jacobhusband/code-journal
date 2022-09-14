@@ -88,7 +88,8 @@ h3 {
 h2 {
   font-size: 2.4rem;
   font-weight: 600;
-  padding: 1.6rem 0 2rem;
+  padding: 0;
+  margin-top: 0;
 }
 
 h5 {
@@ -139,7 +140,8 @@ h5 {
   margin-bottom: 2rem;
 }
 
-.search-container {
+.search-container,
+.filter-container {
   align-self: center;
   margin-right: 1rem;
   min-width: 2.5rem;
@@ -147,6 +149,9 @@ h5 {
   padding: 0.4rem;
   border-radius: 0.5rem;
   height: 2.5rem;
+  border-color: #dfdfdf;
+  box-shadow: none;
+  transition: border-color 0.2s linear, box-shadow 0.1s linear 0.1s;
 }
 
 .new-button-container {
@@ -170,6 +175,11 @@ h5 {
   cursor: pointer;
 }
 
+.new-entry {
+  box-shadow: none;
+  transition: box-shadow 0.1s linear 0.1s;
+}
+
 .entry-nav:hover {
   background-color: #6a3b98;
 }
@@ -182,6 +192,8 @@ h5 {
   margin-right: 0.5rem;
   padding: 0.25rem;
   border-radius: 0.2rem;
+  box-shadow: none;
+  transition: box-shadow 0.1s linear 0.1s;
 }
 
 .delete-entry {
@@ -240,15 +252,18 @@ h5 {
 
 .add {
   min-width: 3rem;
+  box-shadow: none;
+  transition: box-shadow 0.1s linear 0.1s;
 }
 
 .search-container:hover,
+.filter-container:hover,
 .edit-icon:hover,
 .new-entry:hover,
 .add:hover {
   cursor: pointer;
   border: 1px solid rgb(84, 27, 128);
-  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 2px 3px 0.2px rgba(0, 0, 0, 0.2);
 }
 
 .hidden {
@@ -290,7 +305,7 @@ h5 {
 }
 
 #entry-search:focus {
-  outline: 1px solid rgb(231, 231, 231);
+  outline: 1px solid rgb(84, 27, 128);
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
   background-color: #fff;
   padding: 0.25rem;
@@ -358,6 +373,14 @@ h5 {
 
 .mh-330px {
   max-height: 330px;
+}
+
+.mb-1r {
+  margin-bottom: 1rem;
+}
+
+.mt-1r {
+  margin-top: 1rem;
 }
 
 @media screen and (min-width: 768px) {
