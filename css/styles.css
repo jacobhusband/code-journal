@@ -142,8 +142,8 @@ h5 {
 .search-container {
   align-self: center;
   margin-right: 1rem;
+  min-width: 2.5rem;
   max-width: 2.5rem;
-  min-width: 2rem;
   padding: 0.4rem;
   border-radius: 0.5rem;
   height: 2.5rem;
@@ -170,7 +170,6 @@ h5 {
   cursor: pointer;
 }
 
-.new-entry:hover,
 .entry-nav:hover {
   background-color: #6a3b98;
 }
@@ -181,6 +180,8 @@ h5 {
   right: 0;
   width: 2rem;
   margin-right: 0.5rem;
+  padding: 0.25rem;
+  border-radius: 0.2rem;
 }
 
 .delete-entry {
@@ -237,7 +238,15 @@ h5 {
   filter: brightness(120%);
 }
 
-.search-container:hover {
+.add {
+  min-width: 3rem;
+}
+
+.search-container:hover,
+.edit-icon:hover,
+.new-entry:hover,
+.add:hover {
+  cursor: pointer;
   border: 1px solid rgb(84, 27, 128);
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
@@ -272,21 +281,83 @@ h5 {
 }
 
 #entry-search {
+  padding: 0;
   font-size: 1rem;
   margin: 0;
   border-style: none;
   background-color: #f0f0f0;
-  transition: background-color 0.25s ease-in-out;
+  transition: background-color 0.25s ease-in-out, padding 0.25s ease-in-out;
 }
 
 #entry-search:focus {
   outline: 1px solid rgb(231, 231, 231);
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
   background-color: #fff;
+  padding: 0.25rem;
 }
 
 #entry-search:hover {
+  cursor: pointer;
   background-color: #fff;
+}
+
+.tag-container {
+  align-items: center;
+  max-width: 100%;
+}
+
+.tag {
+  margin: 0 0.5rem 0.5rem 0;
+  user-select: none;
+  padding: 0.2rem 0.5rem;
+  background-color: #562b80;
+  font-size: 1rem;
+  color: white;
+  border-radius: 0.5rem;
+}
+
+.tag-input {
+  position: relative;
+  top: -4px;
+  margin: 0;
+  margin-right: 0.5rem;
+  padding: 0.25rem 0.55rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #562b80;
+  color: white;
+  font-weight: 300;
+  min-height: 1.8rem;
+}
+
+.tag-input:focus {
+  outline: none;
+}
+
+.tag-input-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.del-tag {
+  padding-left: 0.5rem;
+}
+
+.del-tag:hover {
+  cursor: pointer;
+}
+
+.vis-hidden {
+  visibility: hidden;
+}
+
+.of-hidden {
+  overflow: hidden;
+}
+
+.mh-330px {
+  max-height: 330px;
 }
 
 @media screen and (min-width: 768px) {

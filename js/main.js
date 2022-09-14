@@ -29,9 +29,68 @@ $photoUrl.addEventListener('input', updateSrc);
 $entryNav.addEventListener('click', goToEntries);
 $newButton.addEventListener('click', showEntryForm);
 window.addEventListener('DOMContentLoaded', showEntries);
-$ul.addEventListener('click', showEditEntry);
+$ul.addEventListener('click', detectEntryClicks);
 $deleteEntry.addEventListener('click', showConfirmationModal);
 $modalConfirmation.addEventListener('click', handleModalAction);
+
+function detectEntryClicks(event) {
+  var id, grandpa, papa, tagText, span;
+  if (event.target.matches('.edit-icon')) {
+    showEntryForm();
+    id = parseInt(event.target.closest('[data-entry-id]').dataset.entryId);
+
+    for (var i = 0; i < data.entries.length; i++) {
+      if (data.entries[i].id === id) {
+        data.editing = data.entries[i];
+        break;
+      }
+    }
+
+    $form.elements.title.value = data.editing.title;
+    $form.elements.url.value = data.editing.url;
+    $form.elements.notes.value = data.editing.notes;
+    $entryImage.setAttribute('src', data.editing.url);
+
+    $newEntryText.textContent = 'Edit Entry';
+    $deleteEntry.className = 'delete-entry';
+  } else if (event.target.matches('.add')) {
+    span = event.target.previousElementSibling;
+    span.textContent = '';
+    span.className = 'tag-input';
+    event.target.className = 'hidden';
+    span.focus();
+    span.addEventListener('keypress', createTag);
+    span.addEventListener('blur', checkEmptySpan);
+  } else if (event.target.matches('span.del-tag')) {
+    grandpa = event.target.parentElement.parentElement;
+    papa = event.target.parentElement;
+    id = parseInt(grandpa.closest('li').dataset.entryId);
+    tagText = papa.textContent.slice(0, papa.textContent.length - 1);
+
+    grandpa.removeChild(papa);
+    removeTagFromData(id, tagText);
+  } else if (event.target.matches('p.tag') && !event.target.matches('p.add')) {
+    if (event.target.firstElementChild.className === 'del-tag hidden') {
+      event.target.firstElementChild.className = 'del-tag';
+    } else {
+      event.target.firstElementChild.className = 'del-tag hidden';
+    }
+  }
+}
+
+function removeTagFromData(id, text) {
+  for (var i = 0; i < data.entries.length; i++) {
+    if (data.entries[i].id === id) {
+      for (var j = 0; j < data.entries[i].tags.length; j++) {
+        if (data.entries[i].tags[j].text === text) {
+          data.entries[i].tags.splice(j, 1);
+          break;
+        }
+      }
+      break;
+    }
+  }
+}
 
 function filterEntries(event) {
   var re = new RegExp(event.target.value, 'i');
@@ -71,6 +130,10 @@ function handleModalAction(event) {
         data.entries.splice(i, 1);
         data.editing = null;
         goToEntries();
+        if (!data.entries.length) {
+          data.tags = [];
+          data.nextEntryId = 1;
+        }
       }
     }
   }
@@ -80,26 +143,74 @@ function showConfirmationModal(event) {
   $modalConfirmation.className = 'confirmation-modal-container';
 }
 
-function showEditEntry(event) {
-  if (event.target.matches('.edit-icon')) {
-    showEntryForm();
-    var id = parseInt(event.target.closest('[data-entry-id]').dataset.entryId);
+function checkEmptySpan(event) {
+  if (event.target.textContent === '') {
+    event.target.className = 'hidden';
+    event.target.nextElementSibling.className = 'add tag';
+  }
+}
+
+function createTag(event) {
+  var tag;
+  var tagParent = event.target.parentElement.parentElement;
+  var randomColor = getDarkColor();
+  var id = parseInt(event.target.closest('li').dataset.entryId);
+  var tagExists = false;
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    event.target.className = 'tag-input hidden';
+    tag = createTagElements(event.target.textContent);
+    for (var tagInd = 0; tagInd < data.tags.length; tagInd++) {
+      if (data.tags[tagInd].text === event.target.textContent) {
+        tagExists = true;
+        break;
+      }
+    }
+    if (tagExists) {
+      tag.style.backgroundColor = data.tags[tagInd].color;
+    } else {
+      tag.style.backgroundColor = randomColor;
+    }
 
     for (var i = 0; i < data.entries.length; i++) {
       if (data.entries[i].id === id) {
-        data.editing = data.entries[i];
+        if (!tagExists) {
+          data.entries[i].tags.push({
+            color: randomColor,
+            text: event.target.textContent
+          });
+          data.tags.push({
+            color: randomColor,
+            text: event.target.textContent
+          });
+        } else {
+          data.entries[i].tags.push({
+            color: data.tags[tagInd].color,
+            text: event.target.textContent
+          });
+        }
         break;
       }
     }
 
-    $form.elements.title.value = data.editing.title;
-    $form.elements.url.value = data.editing.url;
-    $form.elements.notes.value = data.editing.notes;
-    $entryImage.setAttribute('src', data.editing.url);
-
-    $newEntryText.textContent = 'Edit Entry';
-    $deleteEntry.className = 'delete-entry';
+    tagParent.appendChild(tag);
+    event.target.parentElement.lastElementChild.className = 'add tag';
+    event.target.nextElementSibling.click();
   }
+}
+
+function getDarkColor() {
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += Math.floor(Math.random() * 10);
+  }
+  return color;
+}
+
+function createTagElements(text) {
+  return elementCreator('p', { innerText: text, class: 'tag' }, [
+    elementCreator('span', { class: 'del-tag hidden', innerText: 'x' })
+  ]);
 }
 
 function showEntryForm(event) {
@@ -121,6 +232,9 @@ function goToEntries(event) {
 
 function showEntries() {
   var li = $ul.lastElementChild;
+  var entryElement;
+  var tagContainer;
+  var $tag;
 
   while (li) {
     $ul.removeChild(li);
@@ -128,9 +242,16 @@ function showEntries() {
   }
 
   data.entries.forEach(entry => {
-    if (entry) {
-      $ul.appendChild(createEntryElements(entry));
+    entryElement = createEntryElements(entry);
+    if (entry.tags) {
+      tagContainer = entryElement.querySelector('.tag-container');
+      entry.tags.forEach(tag => {
+        $tag = createTagElements(tag.text);
+        $tag.style.backgroundColor = tag.color;
+        tagContainer.appendChild($tag);
+      });
     }
+    $ul.appendChild(entryElement);
   });
 }
 
@@ -143,6 +264,7 @@ function submitEntryForm(event) {
     formDataObj.url = $form.elements.url.value;
     formDataObj.notes = $form.elements.notes.value;
     formDataObj.id = data.nextEntryId;
+    formDataObj.tags = [];
     data.nextEntryId++;
     data.entries.unshift(formDataObj);
     $entryImage.setAttribute('src', 'images/placeholder-image-square.jpg');
@@ -188,7 +310,7 @@ function createEntryElements(entry) {
         alt: `Entry Image ${entry.id}`
       })
     ]),
-    elementCreator('div', { class: 'column-half pos-rel' }, [
+    elementCreator('div', { class: 'column-half pos-rel mh-330px of-hidden' }, [
       elementCreator('h3', { innerText: entry.title }),
       elementCreator('img', {
         src: 'images/pencil.png',
@@ -197,6 +319,18 @@ function createEntryElements(entry) {
       elementCreator('p', {
         innerText: entry.notes
       })
+    ]),
+    elementCreator('div', { class: 'column-full' }, [
+      elementCreator('div', { class: 'tag-container row' }, [
+        elementCreator('div', { class: 'tag-input-container' }, [
+          elementCreator('span', {
+            role: 'textbox',
+            contenteditable: '',
+            class: 'tag-input hidden'
+          }),
+          elementCreator('p', { innerText: 'Tag +', class: 'add tag' })
+        ])
+      ])
     ])
   ]);
   return $li;
