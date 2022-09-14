@@ -71,6 +71,10 @@ function handleModalAction(event) {
         data.entries.splice(i, 1);
         data.editing = null;
         goToEntries();
+        if (!data.entries.length) {
+          data.tags = [];
+          data.nextEntryId = 1;
+        }
       }
     }
   }
@@ -100,38 +104,70 @@ function detectEntryClicks(event) {
     $newEntryText.textContent = 'Edit Entry';
     $deleteEntry.className = 'delete-entry';
   } else if (event.target.matches('.add')) {
-    var span = event.target.nextElementSibling.firstElementChild;
+    var span = event.target.previousElementSibling;
     span.textContent = '';
     span.className = 'tag-input';
     event.target.className = 'hidden';
     span.focus();
     span.addEventListener('keypress', createTag);
+    span.addEventListener('blur', checkEmptySpan);
+  }
+}
+
+function checkEmptySpan(event) {
+  if (event.target.textContent === '') {
+    event.target.className = 'hidden';
+    event.target.nextElementSibling.className = 'add tag';
   }
 }
 
 function createTag(event) {
   var tag;
-  var tagParent = event.target.parentElement;
-  var randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+  var tagParent = event.target.parentElement.parentElement;
+  var randomColor = getDarkColor();
   var id = parseInt(event.target.closest('li').dataset.entryId);
+  var tagExists = false;
   if (event.key === 'Enter') {
     event.preventDefault();
     event.target.className = 'tag-input hidden';
     tag = createTagElements(event.target.textContent);
-    tag.style.backgroundColor = randomColor;
-    for (var i = 0; i < data.entries.length; i++) {
-      if (data.entries[i].id === id) {
-        data.entries[i].tags.push({
-          color: randomColor,
-          text: event.target.textContent
-        });
-
+    for (var tagInd = 0; tagInd < data.tags.length; tagInd++) {
+      if (data.tags[tagInd].text === event.target.textContent) {
+        tagExists = true;
         break;
       }
     }
+    if (tagExists) {
+      tag.style.backgroundColor = data.tags[tagInd].color;
+    } else {
+      tag.style.backgroundColor = randomColor;
+      for (var i = 0; i < data.entries.length; i++) {
+        if (data.entries[i].id === id) {
+          data.entries[i].tags.push({
+            color: randomColor,
+            text: event.target.textContent
+          });
+          data.tags.push({
+            color: randomColor,
+            text: event.target.textContent
+          });
+          break;
+        }
+      }
+    }
+
     tagParent.appendChild(tag);
-    event.target.parentElement.parentElement.firstChild.className = 'add tag';
+    event.target.parentElement.lastElementChild.className = 'add tag';
+    event.target.nextElementSibling.click();
   }
+}
+
+function getDarkColor() {
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += Math.floor(Math.random() * 10);
+  }
+  return color;
 }
 
 function createTagElements(text) {
@@ -237,7 +273,7 @@ function createEntryElements(entry) {
         alt: `Entry Image ${entry.id}`
       })
     ]),
-    elementCreator('div', { class: 'column-half pos-rel' }, [
+    elementCreator('div', { class: 'column-half pos-rel mh-330px of-hidden' }, [
       elementCreator('h3', { innerText: entry.title }),
       elementCreator('img', {
         src: 'images/pencil.png',
@@ -247,15 +283,15 @@ function createEntryElements(entry) {
         innerText: entry.notes
       })
     ]),
-    elementCreator('div', { class: 'column-half' }, [
-      elementCreator('div', { class: 'tag-container' }, [
-        elementCreator('p', { innerText: 'Tag +', class: 'add tag' }),
+    elementCreator('div', { class: 'column-full' }, [
+      elementCreator('div', { class: 'tag-container row' }, [
         elementCreator('div', { class: 'tag-input-container' }, [
           elementCreator('span', {
             role: 'textbox',
             contenteditable: '',
             class: 'tag-input hidden'
-          })
+          }),
+          elementCreator('p', { innerText: 'Tag +', class: 'add tag' })
         ])
       ])
     ])

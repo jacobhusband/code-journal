@@ -238,6 +238,10 @@ h5 {
   filter: brightness(120%);
 }
 
+.add {
+  min-width: 3rem;
+}
+
 .search-container:hover,
 .edit-icon:hover,
 .new-entry:hover,
@@ -298,14 +302,14 @@ h5 {
 }
 
 .tag-container {
-  display: flex;
   align-items: center;
+  max-width: 100%;
 }
 
 .tag {
-  margin: 0 0.25rem;
+  margin: 0 0.5rem 0.5rem 0;
   user-select: none;
-  padding: 0.5rem;
+  padding: 0.2rem 0.5rem;
   background-color: #562b80;
   font-size: 1rem;
   color: white;
@@ -313,14 +317,18 @@ h5 {
 }
 
 .tag-input {
+  position: relative;
+  top: -4px;
   margin: 0;
-  padding: 0.55rem;
+  margin-right: 0.5rem;
+  padding: 0.25rem 0.55rem;
   font-size: 1rem;
   border: none;
   border-radius: 0.5rem;
   background-color: #562b80;
   color: white;
   font-weight: 300;
+  min-height: 1.8rem;
 }
 
 .tag-input:focus {
@@ -329,6 +337,15 @@ h5 {
 
 .tag-input-container {
   display: flex;
+  flex-wrap: wrap;
+}
+
+.of-hidden {
+  overflow: hidden;
+}
+
+.mh-330px {
+  max-height: 330px;
 }
 
 @media screen and (min-width: 768px) {
