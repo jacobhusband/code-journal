@@ -30,7 +30,6 @@ $entryNav.addEventListener('click', goToEntries);
 $newButton.addEventListener('click', showEntryForm);
 window.addEventListener('DOMContentLoaded', showEntries);
 $ul.addEventListener('click', detectEntryClicks);
-$ul.addEventListener('mouseover', detectEntryHovers);
 $deleteEntry.addEventListener('click', showConfirmationModal);
 $modalConfirmation.addEventListener('click', handleModalAction);
 
@@ -70,18 +69,12 @@ function detectEntryClicks(event) {
 
     grandpa.removeChild(papa);
     removeTagFromData(id, tagText);
-  }
-}
-
-function detectEntryHovers(event) {
-  if (event.target.matches('p.tag') && !event.target.matches('p.add')) {
-    event.target.firstElementChild.className = 'del-tag';
-    event.target.addEventListener('mouseleave', listenForLeave);
-  }
-
-  function listenForLeave(event) {
-    event.target.firstElementChild.className = 'del-tag hidden';
-    event.target.removeEventListener('mouseleave', listenForLeave);
+  } else if (event.target.matches('p.tag') && !event.target.matches('p.add')) {
+    if (event.target.firstElementChild.className === 'del-tag hidden') {
+      event.target.firstElementChild.className = 'del-tag';
+    } else {
+      event.target.firstElementChild.className = 'del-tag hidden';
+    }
   }
 }
 
