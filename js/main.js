@@ -93,21 +93,30 @@ function removeTagFromData(id, text) {
 }
 
 function filterEntries(event) {
+  // Get the string from search and make a regular expression ignoring case
   var re = new RegExp(event.target.value, 'i');
+
+  // Go through each data entry object
   for (var i = 0; i < data.entries.length; i++) {
+    // If search string does not match a title or notes for a data entry object
     if (!re.test(data.entries[i].title) || !re.test(data.entries[i].notes)) {
-      // go through each li element id and if it does not match
-      // the data entry id then give it a hidden class
+      // Loop through each entry in the DOM
       for (var j = 0; j < $ul.children.length; j++) {
+        // If the DOM entry matches the data entry
         if (parseInt($ul.children[j].dataset.entryId) === data.entries[i].id) {
+          // Hide that entry
           $ul.children[j].className = 'hidden';
         }
       }
     }
 
+    // If search string matches a title or note for a data entry object
     if (re.test(data.entries[i].title) || re.test(data.entries[i].notes)) {
+      // Loop through each entry in the DOM
       for (var k = 0; k < $ul.children.length; k++) {
+        // If the DOM entry matches the data entry
         if (parseInt($ul.children[k].dataset.entryId) === data.entries[i].id) {
+          // Make the DOM entry visible
           $ul.children[k].className = 'row';
         }
       }
