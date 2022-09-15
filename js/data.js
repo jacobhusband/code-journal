@@ -5,7 +5,8 @@ var data = {
   entries: [],
   editing: null,
   nextEntryId: 1,
-  tags: []
+  tags: [],
+  entriesView: 'large-entry'
 };
 
 if (localStorage.getItem('data')) {

@@ -15,6 +15,9 @@ var $modalConfirmation = $entryForm.querySelector(
 );
 var $searchIcon = $entries.querySelector('.search-container');
 var $searchBox = $entries.querySelector('#entry-search');
+// var $cardViewEntries = document.querySelector('ul[data-view="small-entry"]');
+var $cardViewButton = document.querySelector('button.card-view');
+// var $listViewButton = document.querySelector("button.list-view");
 
 if (data.view === 'entry-form') {
   showEntryForm();
@@ -29,11 +32,14 @@ $photoUrl.addEventListener('input', updateSrc);
 $entryNav.addEventListener('click', goToEntries);
 $newButton.addEventListener('click', showEntryForm);
 window.addEventListener('DOMContentLoaded', showEntries);
-$ul.addEventListener('click', detectEntryClicks);
+$ul.addEventListener('click', detectEntriesClicks);
 $deleteEntry.addEventListener('click', showConfirmationModal);
 $modalConfirmation.addEventListener('click', handleModalAction);
+$cardViewButton.addEventListener('click', showCardView);
 
-function detectEntryClicks(event) {
+function showCardView(event) {}
+
+function detectEntriesClicks(event) {
   var id, grandpa, papa, tagText, span;
   if (event.target.matches('.edit-icon')) {
     showEntryForm();
@@ -303,7 +309,7 @@ function showEntries() {
   }
 
   data.entries.forEach(entry => {
-    entryElement = createEntryElements(entry);
+    entryElement = createLargeEntryElements(entry);
     if (entry.tags) {
       tagContainer = entryElement.querySelector('.tag-container');
       entry.tags.forEach(tag => {
@@ -362,7 +368,7 @@ function isValidUrl(urlString) {
   return !!urlPattern.test(urlString);
 }
 
-function createEntryElements(entry) {
+function createLargeEntryElements(entry) {
   var $li = elementCreator('li', { class: 'row', 'data-entry-id': entry.id }, [
     elementCreator('div', { class: 'column-half' }, [
       elementCreator('img', {
