@@ -2,7 +2,8 @@
   display: none !important;
 }
 
-.container {
+.container,
+.content-container {
   max-width: 575px;
   margin: 0 auto;
   padding: 0 1.5rem;
@@ -18,9 +19,21 @@
   width: 100%;
 }
 
+.column-third {
+  width: calc(100%/3);
+}
+
+.column-two-thirds {
+  width: calc(200%/3);
+}
+
 @media screen and (min-width: 768px) {
   .container {
     max-width: 900px;
+  }
+
+  .content-container {
+    max-width: 1200px;
   }
 
   .column-full,

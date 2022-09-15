@@ -15,7 +15,7 @@ var $modalConfirmation = $entryForm.querySelector(
 );
 var $searchIcon = $entries.querySelector('.search-container');
 var $searchBox = $entries.querySelector('#entry-search');
-// var $cardViewEntries = document.querySelector('ul[data-view="small-entry"]');
+var $cardViewUl = document.querySelector('ul[data-view="small-entry"]');
 var $cardViewButton = document.querySelector('button.card-view');
 // var $listViewButton = document.querySelector("button.list-view");
 
@@ -25,19 +25,60 @@ if (data.view === 'entry-form') {
   showEntries();
 }
 
+data.entriesView = 'small-entry';
+
 $searchBox.addEventListener('input', filterEntries);
 $searchIcon.addEventListener('click', showSearchBox);
 $form.addEventListener('submit', submitEntryForm);
 $photoUrl.addEventListener('input', updateSrc);
 $entryNav.addEventListener('click', showEntries);
 $newButton.addEventListener('click', showEntryForm);
-window.addEventListener('DOMContentLoaded', createAndAddEntries);
+window.addEventListener('DOMContentLoaded', loadEntriesContent);
 $ul.addEventListener('click', detectEntriesClicks);
 $deleteEntry.addEventListener('click', showConfirmationModal);
 $modalConfirmation.addEventListener('click', handleModalAction);
 $cardViewButton.addEventListener('click', showCardView);
 
-function showCardView(event) {}
+function showCardView(event) {
+  createSmallEntryElements();
+}
+
+function createSmallEntryElements(entry) {
+  return elementCreator('li', { class: 'row card-format' }, [
+    elementCreator('div', { class: 'column-third' }, [
+      elementCreator('img', {
+        src: entry.url,
+        alt: 'entry image',
+        class: 'small-image'
+      })
+    ]),
+    elementCreator(
+      'div',
+      { class: 'column-two-thirds flex-col space-between' },
+      [
+        elementCreator('div', { class: 'row mw-75pc' }, [
+          elementCreator('h5', {
+            class: 'small-title',
+            innerText: entry.title
+          })
+        ]),
+        elementCreator('div', { class: 'small-notes-container' }, [
+          elementCreator('p', { class: 'small-notes', innerText: entry.notes })
+        ]),
+        elementCreator('div', { class: 'tag-container small-tags row' }, [
+          elementCreator('div', { class: 'tag-input-container' }, [
+            elementCreator('span', {
+              role: 'textbox',
+              contenteditable: '',
+              class: 'tag-input hidden'
+            }),
+            elementCreator('p', { innerText: 'Tag+', class: 'add tag mini' })
+          ])
+        ])
+      ]
+    )
+  ]);
+}
 
 function detectEntriesClicks(event) {
   var id, grandpa, papa, tagText, span;
@@ -285,10 +326,20 @@ function getDarkColor() {
   return color;
 }
 
-function createTagElements(text) {
-  return elementCreator('p', { innerText: text, class: 'tag created-tag' }, [
-    elementCreator('span', { class: 'del-tag hidden', innerText: 'x' })
-  ]);
+function createTagElements(text, mini) {
+  var el;
+  if (mini === 'mini') {
+    el = elementCreator(
+      'p',
+      { innerText: text, class: 'tag created-tag mini' },
+      [elementCreator('span', { class: 'del-tag hidden', innerText: 'x' })]
+    );
+  } else {
+    el = elementCreator('p', { innerText: text, class: 'tag created-tag' }, [
+      elementCreator('span', { class: 'del-tag hidden', innerText: 'x' })
+    ]);
+  }
+  return el;
 }
 
 function showEntryForm(event) {
@@ -307,22 +358,30 @@ function showEntries(event) {
   data.view = 'entries';
 }
 
-function createAndAddEntries() {
+function loadEntriesContent() {
+  if (data.entriesView === 'large-entry') {
+    createAndAddEntries($ul, createLargeEntryElements);
+  } else if (data.entriesView === 'small-entry') {
+    createAndAddEntries($cardViewUl, createSmallEntryElements);
+  }
+}
+
+function createAndAddEntries(parent, createEntryElements) {
   var entryElement;
   var tagContainer;
   var tagElement;
 
   data.entries.forEach(entry => {
-    entryElement = createLargeEntryElements(entry);
+    entryElement = createEntryElements(entry);
     if (entry.tags) {
       tagContainer = entryElement.querySelector('.tag-container');
       entry.tags.forEach(tag => {
-        tagElement = createTagElements(tag.text);
+        tagElement = createTagElements(tag.text, 'mini');
         tagElement.style.backgroundColor = tag.color;
         tagContainer.appendChild(tagElement);
       });
     }
-    $ul.appendChild(entryElement);
+    parent.appendChild(entryElement);
   });
 }
 
@@ -371,15 +430,12 @@ function createNewestEntry() {
   return createLargeEntryElements(data.entries[0]);
 }
 
-// Sample image: https://uploads0.wikiart.org/00339/images/leonardo-da-vinci/mona-lisa-c-1503-1519.jpg
-// Sample image 2: https://upload.wikimedia.org/wikipedia/en/7/7d/Harold_%28film%29.jpg
 function updateSrc(event) {
   if (isValidUrl(event.target.value)) {
     $entryImage.setAttribute('src', event.target.value);
   }
 }
 
-// Grabbed a url validator off stackoverflow https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
 function isValidUrl(urlString) {
   var urlPattern = new RegExp(
     '^(https?:\\/\\/)?' +

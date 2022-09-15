@@ -40,7 +40,7 @@
       </div>
     </header>
     <main>
-      <div class="container">
+      <div class="content-container">
         <div data-view="entry-form" class="form-container hidden">
           <div class="confirmation-modal-container hidden">
             <div class="confirmation-modal">
@@ -51,7 +51,7 @@
               </div>
             </div>
           </div>
-          <form class="journal-entry" action="">
+          <form class="container journal-entry" action="">
             <div class="row">
               <div class="column-full">
                 <h2 class="mt-1r mb-1r">New Entry</h2>
@@ -101,7 +101,7 @@
           </form>
         </div>
         <div data-view="entries" class="hidden">
-          <div class="row">
+          <div class="row container">
             <div class="column-full">
               <div class="row mt-1r nowrap">
                 <h2>Entries</h2>
@@ -126,7 +126,42 @@
             </div>
           </div>
           <ul data-view="large-entry" class="entry-list"></ul>
-          <ul data-view="small-entry" class="entry-list"></ul>
+          <ul data-view="small-entry" class="entry-list row justify-center">
+            <li class="row card-format">
+              <div class="column-third">
+                <img
+                  src="images/placeholder-image-square.jpg"
+                  alt="Placeholder"
+                  class="small-image"
+                />
+              </div>
+              <div class="column-two-thirds flex-col space-between">
+                <div class="row mw-75pc">
+                  <h5 class="small-title">Behold the title</h5>
+                </div>
+                <div class="small-notes-container">
+                  <p class="small-notes">
+                    Monet was raised in Le Havre, Normandy, and became
+                    interested in the outdoors and drawing from an early age.
+                    Although his mother, Louise-Justine Aubrée Monet, supported
+                    his ambitions to be a painter, his father, Claude-Adolphe,
+                    disapproved and wanted him to pursue a career in business.
+                    He was very close to his mother, but she died in January
+                    1857 when he was sixteen years old, and he was sent to live
+                    with his childless, widowed but wealthy aunt, Marie-Jeanne
+                    Lecadre. He went on to study at
+                  </p>
+                </div>
+                <div class="tag-container small-tags row">
+                  <div class="tag-input-container">
+                    <p class="add tag mini">Tag+</p>
+                    <p class="add tag mini">Tag+</p>
+                    <p class="add tag mini">Tag+</p>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </main>

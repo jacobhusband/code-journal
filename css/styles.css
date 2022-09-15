@@ -406,6 +406,67 @@ h5 {
   margin: 0.75rem 0;
 }
 
+.mw-75pc {
+  max-width: 75%;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.card-format {
+  background-color: white;
+  padding: 0.5rem;
+  margin: 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid #562b80;
+  max-width: 326px;
+}
+
+.small-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.2rem 0.5rem 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.small-notes {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  max-height: 3rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  margin: 0 0.5rem;
+}
+
+.small-tags {
+  margin: 0.25rem 0.5rem;
+}
+
+.mini {
+  font-size: 0.7rem;
+  min-width: 2rem;
+  margin: 0;
+  margin-right: 0.25rem;
+  padding: 0.1rem 0.2rem 0.1rem 0.3rem;
+}
+
+.small-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.25rem;
+  border: 1px solid #454545;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
 @media screen and (min-width: 768px) {
   .bar h4 {
     padding: 1rem 0;
