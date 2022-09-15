@@ -93,26 +93,87 @@ function removeTagFromData(id, text) {
 }
 
 function filterEntries(event) {
+  // Get the string from search and make a regular expression ignoring case
   var re = new RegExp(event.target.value, 'i');
+  var words = event.target.value.split(' ');
+
+  var tags, boolArr, entryId, dataId, title, notes;
+
+  // Go through each data entry object
+
   for (var i = 0; i < data.entries.length; i++) {
+    dataId = data.entries[i].id;
+    title = data.entries[i].title;
+    notes = data.entries[i].notes;
+    tags = [];
+    data.entries[i].tags.forEach(tag => {
+      tags.push(tag.text);
+    });
+    boolArr = compareTagsAndWords(words, tags);
+    boolArr = compareTitleAndNoteToWords(words, title, notes, boolArr);
+    // If search string does not match a title or notes for a data entry object
     if (!re.test(data.entries[i].title) || !re.test(data.entries[i].notes)) {
-      // go through each li element id and if it does not match
-      // the data entry id then give it a hidden class
+      // Loop through each entry in the DOM
       for (var j = 0; j < $ul.children.length; j++) {
-        if (parseInt($ul.children[j].dataset.entryId) === data.entries[i].id) {
+        entryId = parseInt($ul.children[j].dataset.entryId);
+        if (entryId === dataId && boolArr.some(x => x - 1)) {
+          // Hide that entry
           $ul.children[j].className = 'hidden';
         }
       }
     }
 
-    if (re.test(data.entries[i].title) || re.test(data.entries[i].notes)) {
-      for (var k = 0; k < $ul.children.length; k++) {
-        if (parseInt($ul.children[k].dataset.entryId) === data.entries[i].id) {
-          $ul.children[k].className = 'row';
+    // If search string matches a title or note for a data entry object
+    if (
+      re.test(data.entries[i].title) ||
+      re.test(data.entries[i].notes) ||
+      !boolArr.some(x => x - 1)
+    ) {
+      // Loop through each entry in the DOM
+      for (var p = 0; p < $ul.children.length; p++) {
+        entryId = parseInt($ul.children[p].dataset.entryId);
+        // If the DOM entry matches the data entry
+        if (entryId === dataId) {
+          // Make the DOM entry visible
+          $ul.children[p].className = 'row';
         }
       }
     }
   }
+}
+
+function compareTagsAndWords(words, tags) {
+  var boolArr = Array(words.length).fill(0);
+  var searchStrWord, tagWord;
+
+  for (var k = 0; k < words.length; k++) {
+    searchStrWord = new RegExp(words[k], 'i');
+    // Loop through each word in the search bar
+    for (var n = 0; n < tags.length; n++) {
+      tagWord = tags[n];
+      // If the search bar matches the tag text
+      if (searchStrWord.test(tagWord)) {
+        // Set the bool array to true
+        boolArr[k] = 1;
+        // Go to the next word to compare to tag
+        break;
+      }
+    }
+  }
+  return boolArr;
+}
+
+function compareTitleAndNoteToWords(words, title, note, boolArr) {
+  var searchStrWord;
+
+  for (var k = 0; k < words.length; k++) {
+    searchStrWord = new RegExp(words[k], 'i');
+    // Loop through each word in the search bar
+    if (searchStrWord.test(title) || searchStrWord.test(note)) {
+      boolArr[k] = 1;
+    }
+  }
+  return boolArr;
 }
 
 function showSearchBox(event) {
@@ -208,7 +269,7 @@ function getDarkColor() {
 }
 
 function createTagElements(text) {
-  return elementCreator('p', { innerText: text, class: 'tag' }, [
+  return elementCreator('p', { innerText: text, class: 'tag created-tag' }, [
     elementCreator('span', { class: 'del-tag hidden', innerText: 'x' })
   ]);
 }
@@ -310,7 +371,7 @@ function createEntryElements(entry) {
         alt: `Entry Image ${entry.id}`
       })
     ]),
-    elementCreator('div', { class: 'column-half pos-rel mh-330px of-hidden' }, [
+    elementCreator('div', { class: 'column-half pos-rel mh-330px of-scroll' }, [
       elementCreator('h3', { innerText: entry.title }),
       elementCreator('img', {
         src: 'images/pencil.png',
