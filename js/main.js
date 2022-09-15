@@ -97,17 +97,20 @@ function filterEntries(event) {
   var re = new RegExp(event.target.value, 'i');
   var words = event.target.value.split(' ');
 
-  var tags, boolArr, entryId, dataId;
+  var tags, boolArr, entryId, dataId, title, notes;
 
   // Go through each data entry object
 
   for (var i = 0; i < data.entries.length; i++) {
     dataId = data.entries[i].id;
+    title = data.entries[i].title;
+    notes = data.entries[i].notes;
     tags = [];
     data.entries[i].tags.forEach(tag => {
       tags.push(tag.text);
     });
     boolArr = compareTagsAndWords(words, tags);
+    boolArr = compareTitleAndNoteToWords(words, title, notes, boolArr);
     // If search string does not match a title or notes for a data entry object
     if (!re.test(data.entries[i].title) || !re.test(data.entries[i].notes)) {
       // Loop through each entry in the DOM
@@ -155,6 +158,19 @@ function compareTagsAndWords(words, tags) {
         // Go to the next word to compare to tag
         break;
       }
+    }
+  }
+  return boolArr;
+}
+
+function compareTitleAndNoteToWords(words, title, note, boolArr) {
+  var searchStrWord;
+
+  for (var k = 0; k < words.length; k++) {
+    searchStrWord = new RegExp(words[k], 'i');
+    // Loop through each word in the search bar
+    if (searchStrWord.test(title) || searchStrWord.test(note)) {
+      boolArr[k] = 1;
     }
   }
   return boolArr;
