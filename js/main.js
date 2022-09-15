@@ -22,16 +22,16 @@ var $cardViewButton = document.querySelector('button.card-view');
 if (data.view === 'entry-form') {
   showEntryForm();
 } else if (data.view === 'entries') {
-  goToEntries();
+  showEntries();
 }
 
 $searchBox.addEventListener('input', filterEntries);
 $searchIcon.addEventListener('click', showSearchBox);
 $form.addEventListener('submit', submitEntryForm);
 $photoUrl.addEventListener('input', updateSrc);
-$entryNav.addEventListener('click', goToEntries);
+$entryNav.addEventListener('click', showEntries);
 $newButton.addEventListener('click', showEntryForm);
-window.addEventListener('DOMContentLoaded', showEntries);
+window.addEventListener('DOMContentLoaded', createAndAddEntries);
 $ul.addEventListener('click', detectEntriesClicks);
 $deleteEntry.addEventListener('click', showConfirmationModal);
 $modalConfirmation.addEventListener('click', handleModalAction);
@@ -194,14 +194,25 @@ function handleModalAction(event) {
     $modalConfirmation.className = 'confirmation-modal-container hidden';
     for (var i = 0; i < data.entries.length; i++) {
       if (data.entries[i].id === data.editing.id) {
+        removeEntry(data.entries[i].id);
         data.entries.splice(i, 1);
         data.editing = null;
-        goToEntries();
+        showEntries();
         if (!data.entries.length) {
           data.tags = [];
           data.nextEntryId = 1;
         }
+        break;
       }
+    }
+  }
+}
+
+function removeEntry(id) {
+  for (var i = 0; i < $ul.children.length; i++) {
+    if (parseInt($ul.children[i].dataset.entryId) === id) {
+      $ul.removeChild($ul.children[i]);
+      break;
     }
   }
 }
@@ -290,32 +301,25 @@ function showEntryForm(event) {
   $newEntryText.textContent = 'New Entry';
 }
 
-function goToEntries(event) {
+function showEntries(event) {
   $entryForm.className = 'form-container hidden';
   $entries.className = '';
   data.view = 'entries';
-  showEntries();
 }
 
-function showEntries() {
-  var li = $ul.lastElementChild;
+function createAndAddEntries() {
   var entryElement;
   var tagContainer;
-  var $tag;
-
-  while (li) {
-    $ul.removeChild(li);
-    li = $ul.lastElementChild;
-  }
+  var tagElement;
 
   data.entries.forEach(entry => {
     entryElement = createLargeEntryElements(entry);
     if (entry.tags) {
       tagContainer = entryElement.querySelector('.tag-container');
       entry.tags.forEach(tag => {
-        $tag = createTagElements(tag.text);
-        $tag.style.backgroundColor = tag.color;
-        tagContainer.appendChild($tag);
+        tagElement = createTagElements(tag.text);
+        tagElement.style.backgroundColor = tag.color;
+        tagContainer.appendChild(tagElement);
       });
     }
     $ul.appendChild(entryElement);
@@ -324,6 +328,7 @@ function showEntries() {
 
 function submitEntryForm(event) {
   event.preventDefault();
+  var entry, title, notes;
 
   if (!data.editing) {
     var formDataObj = {};
@@ -334,16 +339,36 @@ function submitEntryForm(event) {
     formDataObj.tags = [];
     data.nextEntryId++;
     data.entries.unshift(formDataObj);
-    $entryImage.setAttribute('src', 'images/placeholder-image-square.jpg');
+    entry = createNewestEntry();
+    $ul.prepend(entry);
   } else {
     data.editing.title = $form.elements.title.value;
     data.editing.url = $form.elements.url.value;
     data.editing.notes = $form.elements.notes.value;
+    for (var i = 0; i < $ul.children.length; i++) {
+      if (parseInt($ul.children[i].dataset.entryId) === data.editing.id) {
+        $ul.children[i]
+          .querySelector('img.entry-image')
+          .setAttribute('src', data.editing.url);
+        title =
+          $ul.children[i].firstElementChild.nextElementSibling
+            .firstElementChild;
+        title.textContent = data.editing.title;
+        notes =
+          $ul.children[i].firstElementChild.nextElementSibling.lastElementChild;
+        notes.textContent = data.editing.notes;
+        break;
+      }
+    }
   }
 
   $deleteEntry.className = 'delete-entry hidden';
   $form.reset();
-  goToEntries();
+  showEntries();
+}
+
+function createNewestEntry() {
+  return createLargeEntryElements(data.entries[0]);
 }
 
 // Sample image: https://uploads0.wikiart.org/00339/images/leonardo-da-vinci/mona-lisa-c-1503-1519.jpg
