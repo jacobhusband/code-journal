@@ -96,40 +96,24 @@ function filterEntries(event) {
   // Get the string from search and make a regular expression ignoring case
   var re = new RegExp(event.target.value, 'i');
   var words = event.target.value.split(' ');
-  var tags, reWord, searchWord, tagMatch;
+
+  var tags, boolArr, entryId, dataId;
 
   // Go through each data entry object
 
   for (var i = 0; i < data.entries.length; i++) {
+    dataId = data.entries[i].id;
+    tags = [];
+    data.entries[i].tags.forEach(tag => {
+      tags.push(tag.text);
+    });
+    boolArr = compareTagsAndWords(words, tags);
     // If search string does not match a title or notes for a data entry object
     if (!re.test(data.entries[i].title) || !re.test(data.entries[i].notes)) {
       // Loop through each entry in the DOM
       for (var j = 0; j < $ul.children.length; j++) {
-        tagMatch = false;
-        // Loop through each tag in the DOM
-        tags = $ul.children[j].querySelectorAll('p.created-tag');
-        for (var k = 0; k < tags.length; k++) {
-          // Loop through each word in the search bar
-          for (var n = 0; n < words.length; n++) {
-            reWord = new RegExp(words[n]);
-            searchWord = tags[k].textContent.slice(
-              0,
-              tags[k].textContent.length - 1
-            );
-            if (reWord.test(searchWord)) {
-              tagMatch = true;
-              break;
-            }
-          }
-          if (tagMatch) {
-            break;
-          }
-        }
-        // If the DOM entry matches the data entry
-        if (
-          parseInt($ul.children[j].dataset.entryId) === data.entries[i].id &&
-          !tagMatch
-        ) {
+        entryId = parseInt($ul.children[j].dataset.entryId);
+        if (entryId === dataId && boolArr.some(x => x - 1)) {
           // Hide that entry
           $ul.children[j].className = 'hidden';
         }
@@ -137,17 +121,43 @@ function filterEntries(event) {
     }
 
     // If search string matches a title or note for a data entry object
-    if (re.test(data.entries[i].title) || re.test(data.entries[i].notes)) {
+    if (
+      re.test(data.entries[i].title) ||
+      re.test(data.entries[i].notes) ||
+      !boolArr.some(x => x - 1)
+    ) {
       // Loop through each entry in the DOM
       for (var p = 0; p < $ul.children.length; p++) {
+        entryId = parseInt($ul.children[p].dataset.entryId);
         // If the DOM entry matches the data entry
-        if (parseInt($ul.children[p].dataset.entryId) === data.entries[i].id) {
+        if (entryId === dataId) {
           // Make the DOM entry visible
           $ul.children[p].className = 'row';
         }
       }
     }
   }
+}
+
+function compareTagsAndWords(words, tags) {
+  var boolArr = Array(words.length).fill(0);
+  var searchStrWord, tagWord;
+
+  for (var k = 0; k < words.length; k++) {
+    searchStrWord = new RegExp(words[k], 'i');
+    // Loop through each word in the search bar
+    for (var n = 0; n < tags.length; n++) {
+      tagWord = tags[n];
+      // If the search bar matches the tag text
+      if (searchStrWord.test(tagWord)) {
+        // Set the bool array to true
+        boolArr[k] = 1;
+        // Go to the next word to compare to tag
+        break;
+      }
+    }
+  }
+  return boolArr;
 }
 
 function showSearchBox(event) {
