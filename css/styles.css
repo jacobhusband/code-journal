@@ -256,10 +256,26 @@ h5 {
   transition: box-shadow 0.1s linear 0.1s;
 }
 
+.list-view-container {
+  margin-left: auto;
+}
+
+.card-view-container {
+  margin-left: 1rem;
+}
+
+.list-view,
+.card-view {
+  font-size: 1rem;
+  padding: 0.25rem 1rem;
+}
+
 .search-container:hover,
 .edit-icon:hover,
 .new-entry:hover,
-.add:hover {
+.add:hover,
+.list-view:hover,
+.card-view:hover {
   cursor: pointer;
   border: 1px solid rgb(84, 27, 128);
   box-shadow: 2px 2px 3px 0.2px rgba(0, 0, 0, 0.2);
@@ -384,6 +400,10 @@ h5 {
 
 .mt-1r {
   margin-top: 1rem;
+}
+
+.mtb-075r {
+  margin: 0.75rem 0;
 }
 
 @media screen and (min-width: 768px) {
