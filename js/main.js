@@ -106,7 +106,7 @@ function createSmallEntryElements(entry) {
               elementCreator('span', {
                 role: 'textbox',
                 contenteditable: '',
-                class: 'tag-input hidden'
+                class: 'tag-input mini-span hidden'
               }),
               elementCreator('p', { innerText: 'Tag+', class: 'add tag mini' })
             ])
@@ -142,8 +142,8 @@ function detectEntriesClicks(event) {
     span.textContent = '';
     if (event.target.matches('.regular')) {
       span.className = 'tag-input';
-      event.target.className = 'add tag hidden';
-    } else {
+      event.target.className = 'add tag regular hidden';
+    } else if (event.target.matches('.mini')) {
       span.className = 'tag-input mini-span';
       event.target.className = 'add tag mini hidden';
     }
@@ -318,20 +318,20 @@ function checkEmptySpan(event) {
 }
 
 function createTag(event) {
-  var tag;
-  var tagParent = event.target.parentElement.parentElement;
-  var randomColor = getDarkColor();
-  var id = parseInt(event.target.closest('li').dataset.entryId);
+  var tag, tagMini, randomColor, tagContainers, id;
   var tagExists = false;
   if (event.key === 'Enter') {
+    id = parseInt(event.target.closest('li').dataset.entryId);
+    randomColor = getDarkColor();
+    tagContainers = $entries.querySelectorAll('.tag-container');
     event.preventDefault();
     if (event.target.className === 'tag-input') {
       event.target.className = 'tag-input hidden';
-      tag = createTagElements(event.target.textContent);
     } else if (event.target.className === 'tag-input mini-span') {
       event.target.className = 'tag-input mini-span hidden';
-      tag = createTagElements(event.target.textContent, 'mini');
     }
+    tag = createTagElements(event.target.textContent);
+    tagMini = createTagElements(event.target.textContent, 'mini');
     for (var tagInd = 0; tagInd < data.tags.length; tagInd++) {
       if (data.tags[tagInd].text === event.target.textContent) {
         tagExists = true;
@@ -340,8 +340,10 @@ function createTag(event) {
     }
     if (tagExists) {
       tag.style.backgroundColor = data.tags[tagInd].color;
+      tagMini.style.backgroundColor = data.tags[tagInd].color;
     } else {
       tag.style.backgroundColor = randomColor;
+      tagMini.style.backgroundColor = randomColor;
     }
 
     for (var i = 0; i < data.entries.length; i++) {
@@ -365,16 +367,19 @@ function createTag(event) {
       }
     }
 
-    tagParent.appendChild(tag);
+    tagContainers[0].appendChild(tag);
+    tagContainers[1].appendChild(tagMini);
+
     if (
       event.target.parentElement.lastElementChild.className ===
       'add tag mini hidden'
     ) {
       event.target.parentElement.lastElementChild.className = 'add tag mini';
     } else if (
-      event.target.parentElement.lastElementChild.className === 'add tag hidden'
+      event.target.parentElement.lastElementChild.className ===
+      'add tag regular hidden'
     ) {
-      event.target.parentElement.lastElementChild.className = 'add tag';
+      event.target.parentElement.lastElementChild.className = 'add tag regular';
     }
     event.target.nextElementSibling.click();
   }
@@ -443,7 +448,11 @@ function createAndAddEntries(parent, createEntryElements) {
     if (entry.tags) {
       tagContainer = entryElement.querySelector('.tag-container');
       entry.tags.forEach(tag => {
-        tagElement = createTagElements(tag.text, 'mini');
+        if (parent.dataset.view === 'large-entry') {
+          tagElement = createTagElements(tag.text);
+        } else if (parent.dataset.view === 'small-entry') {
+          tagElement = createTagElements(tag.text, 'mini');
+        }
         tagElement.style.backgroundColor = tag.color;
         tagContainer.appendChild(tagElement);
       });
