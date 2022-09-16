@@ -374,6 +374,11 @@ h5 {
   flex-wrap: wrap;
 }
 
+.small-edit {
+  width: 1.5rem;
+  right: -6px;
+}
+
 .del-tag {
   padding-left: 0.5rem;
 }
@@ -420,7 +425,8 @@ h5 {
   margin: 0.5rem;
   border-radius: 0.25rem;
   border: 1px solid #562b80;
-  max-width: 326px;
+  min-width: 326px;
+  max-width: 406px;
 }
 
 .small-title {
@@ -460,11 +466,18 @@ h5 {
   object-fit: cover;
   border-radius: 0.25rem;
   border: 1px solid #454545;
+  margin-bottom: 0;
 }
 
 .flex-col {
   display: flex;
   flex-direction: column;
+}
+
+.mini-span {
+  font-size: 0.75rem;
+  min-height: 0;
+  top: -1px;
 }
 
 @media screen and (min-width: 768px) {

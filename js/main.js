@@ -16,16 +16,15 @@ var $modalConfirmation = $entryForm.querySelector(
 var $searchIcon = $entries.querySelector('.search-container');
 var $searchBox = $entries.querySelector('#entry-search');
 var $cardViewUl = document.querySelector('ul[data-view="small-entry"]');
+var $listViewUl = document.querySelector('ul[data-view="large-entry"]');
 var $cardViewButton = document.querySelector('button.card-view');
-// var $listViewButton = document.querySelector("button.list-view");
+var $listViewButton = document.querySelector('button.list-view');
 
 if (data.view === 'entry-form') {
   showEntryForm();
 } else if (data.view === 'entries') {
   showEntries();
 }
-
-data.entriesView = 'small-entry';
 
 $searchBox.addEventListener('input', filterEntries);
 $searchIcon.addEventListener('click', showSearchBox);
@@ -34,50 +33,88 @@ $photoUrl.addEventListener('input', updateSrc);
 $entryNav.addEventListener('click', showEntries);
 $newButton.addEventListener('click', showEntryForm);
 window.addEventListener('DOMContentLoaded', loadEntriesContent);
-$ul.addEventListener('click', detectEntriesClicks);
+$entries.addEventListener('click', detectEntriesClicks);
 $deleteEntry.addEventListener('click', showConfirmationModal);
 $modalConfirmation.addEventListener('click', handleModalAction);
 $cardViewButton.addEventListener('click', showCardView);
+$listViewButton.addEventListener('click', showListView);
+
+function showListView(event) {
+  // add a hidden class to the card view ul
+  // remove the hidden class from the list view ul
+  swapViews($listViewUl, $cardViewUl);
+  data.entriesView = 'large-entry';
+}
 
 function showCardView(event) {
-  createSmallEntryElements();
+  // add a hidden class to the list view ul
+  // remove the hidden class from the card view ul
+  swapViews($cardViewUl, $listViewUl);
+  data.entriesView = 'small-entry';
+}
+
+function swapViews(show, hide) {
+  var hideClasses = hide.className;
+  var showClasses = show.className;
+  var showClassesArray, hiddenIndex;
+
+  if (!hideClasses.includes('hidden')) {
+    hide.className = hideClasses + ' hidden';
+  }
+  if (showClasses.includes('hidden')) {
+    showClassesArray = showClasses.split(' ');
+    hiddenIndex = showClassesArray.indexOf('hidden');
+    showClassesArray.splice(hiddenIndex, 1);
+    show.className = showClassesArray.join(' ');
+  }
 }
 
 function createSmallEntryElements(entry) {
-  return elementCreator('li', { class: 'row card-format' }, [
-    elementCreator('div', { class: 'column-third' }, [
-      elementCreator('img', {
-        src: entry.url,
-        alt: 'entry image',
-        class: 'small-image'
-      })
-    ]),
-    elementCreator(
-      'div',
-      { class: 'column-two-thirds flex-col space-between' },
-      [
-        elementCreator('div', { class: 'row mw-75pc' }, [
-          elementCreator('h5', {
-            class: 'small-title',
-            innerText: entry.title
-          })
-        ]),
-        elementCreator('div', { class: 'small-notes-container' }, [
-          elementCreator('p', { class: 'small-notes', innerText: entry.notes })
-        ]),
-        elementCreator('div', { class: 'tag-container small-tags row' }, [
-          elementCreator('div', { class: 'tag-input-container' }, [
-            elementCreator('span', {
-              role: 'textbox',
-              contenteditable: '',
-              class: 'tag-input hidden'
+  return elementCreator(
+    'li',
+    { class: 'row card-format', 'data-entry-id': entry.id },
+    [
+      elementCreator('div', { class: 'column-third' }, [
+        elementCreator('img', {
+          src: entry.url,
+          alt: 'entry image',
+          class: 'entry-image small-image'
+        })
+      ]),
+      elementCreator(
+        'div',
+        { class: 'column-two-thirds flex-col space-between pos-rel ' },
+        [
+          elementCreator('div', { class: 'row mw-75pc' }, [
+            elementCreator('h5', {
+              class: 'small-title',
+              innerText: entry.title
             }),
-            elementCreator('p', { innerText: 'Tag+', class: 'add tag mini' })
+            elementCreator('img', {
+              src: 'images/pencil.png',
+              class: 'edit-icon small-edit'
+            })
+          ]),
+          elementCreator('div', { class: 'small-notes-container' }, [
+            elementCreator('p', {
+              class: 'small-notes',
+              innerText: entry.notes
+            })
+          ]),
+          elementCreator('div', { class: 'tag-container small-tags row' }, [
+            elementCreator('div', { class: 'tag-input-container' }, [
+              elementCreator('span', {
+                role: 'textbox',
+                contenteditable: '',
+                class: 'tag-input hidden'
+              }),
+              elementCreator('p', { innerText: 'Tag+', class: 'add tag mini' })
+            ])
           ])
-        ])
-      ]
-    )
-  ]);
+        ]
+      )
+    ]
+  );
 }
 
 function detectEntriesClicks(event) {
@@ -103,8 +140,14 @@ function detectEntriesClicks(event) {
   } else if (event.target.matches('.add')) {
     span = event.target.previousElementSibling;
     span.textContent = '';
-    span.className = 'tag-input';
-    event.target.className = 'hidden';
+    if (event.target.matches('.regular')) {
+      span.className = 'tag-input';
+      event.target.className = 'add tag hidden';
+    } else {
+      span.className = 'tag-input mini-span';
+      event.target.className = 'add tag mini hidden';
+    }
+
     span.focus();
     span.addEventListener('keypress', createTag);
     span.addEventListener('blur', checkEmptySpan);
@@ -264,8 +307,13 @@ function showConfirmationModal(event) {
 
 function checkEmptySpan(event) {
   if (event.target.textContent === '') {
-    event.target.className = 'hidden';
-    event.target.nextElementSibling.className = 'add tag';
+    if (event.target.className === 'tag-input mini-span') {
+      event.target.className = 'tag-input mini-span hidden';
+      event.target.nextElementSibling.className = 'add tag mini';
+    } else if (event.target.className === 'tag-input') {
+      event.target.className = 'tag-input hidden';
+      event.target.nextElementSibling.className = 'add tag';
+    }
   }
 }
 
@@ -277,8 +325,13 @@ function createTag(event) {
   var tagExists = false;
   if (event.key === 'Enter') {
     event.preventDefault();
-    event.target.className = 'tag-input hidden';
-    tag = createTagElements(event.target.textContent);
+    if (event.target.className === 'tag-input') {
+      event.target.className = 'tag-input hidden';
+      tag = createTagElements(event.target.textContent);
+    } else if (event.target.className === 'tag-input mini-span') {
+      event.target.className = 'tag-input mini-span hidden';
+      tag = createTagElements(event.target.textContent, 'mini');
+    }
     for (var tagInd = 0; tagInd < data.tags.length; tagInd++) {
       if (data.tags[tagInd].text === event.target.textContent) {
         tagExists = true;
@@ -313,7 +366,16 @@ function createTag(event) {
     }
 
     tagParent.appendChild(tag);
-    event.target.parentElement.lastElementChild.className = 'add tag';
+    if (
+      event.target.parentElement.lastElementChild.className ===
+      'add tag mini hidden'
+    ) {
+      event.target.parentElement.lastElementChild.className = 'add tag mini';
+    } else if (
+      event.target.parentElement.lastElementChild.className === 'add tag hidden'
+    ) {
+      event.target.parentElement.lastElementChild.className = 'add tag';
+    }
     event.target.nextElementSibling.click();
   }
 }
@@ -335,9 +397,11 @@ function createTagElements(text, mini) {
       [elementCreator('span', { class: 'del-tag hidden', innerText: 'x' })]
     );
   } else {
-    el = elementCreator('p', { innerText: text, class: 'tag created-tag' }, [
-      elementCreator('span', { class: 'del-tag hidden', innerText: 'x' })
-    ]);
+    el = elementCreator(
+      'p',
+      { innerText: text, class: 'tag created-tag regular' },
+      [elementCreator('span', { class: 'del-tag hidden', innerText: 'x' })]
+    );
   }
   return el;
 }
@@ -359,10 +423,13 @@ function showEntries(event) {
 }
 
 function loadEntriesContent() {
+  createAndAddEntries($listViewUl, createLargeEntryElements);
+  createAndAddEntries($cardViewUl, createSmallEntryElements);
+
   if (data.entriesView === 'large-entry') {
-    createAndAddEntries($ul, createLargeEntryElements);
+    $listViewUl.classList.remove('hidden');
   } else if (data.entriesView === 'small-entry') {
-    createAndAddEntries($cardViewUl, createSmallEntryElements);
+    $cardViewUl.classList.remove('hidden');
   }
 }
 
@@ -387,7 +454,7 @@ function createAndAddEntries(parent, createEntryElements) {
 
 function submitEntryForm(event) {
   event.preventDefault();
-  var entry, title, notes;
+  var smallEntry, largeEntry, domInd;
 
   if (!data.editing) {
     var formDataObj = {};
@@ -398,27 +465,16 @@ function submitEntryForm(event) {
     formDataObj.tags = [];
     data.nextEntryId++;
     data.entries.unshift(formDataObj);
-    entry = createNewestEntry();
-    $ul.prepend(entry);
+    [largeEntry, smallEntry] = createNewestEntry();
+    addNewestEntry(largeEntry, smallEntry);
   } else {
     data.editing.title = $form.elements.title.value;
     data.editing.url = $form.elements.url.value;
     data.editing.notes = $form.elements.notes.value;
-    for (var i = 0; i < $ul.children.length; i++) {
-      if (parseInt($ul.children[i].dataset.entryId) === data.editing.id) {
-        $ul.children[i]
-          .querySelector('img.entry-image')
-          .setAttribute('src', data.editing.url);
-        title =
-          $ul.children[i].firstElementChild.nextElementSibling
-            .firstElementChild;
-        title.textContent = data.editing.title;
-        notes =
-          $ul.children[i].firstElementChild.nextElementSibling.lastElementChild;
-        notes.textContent = data.editing.notes;
-        break;
-      }
-    }
+    domInd = findDOMElement($listViewUl);
+    modifyDOMEntry($listViewUl, domInd);
+    domInd = findDOMElement($cardViewUl);
+    modifyDOMEntry($cardViewUl, domInd);
   }
 
   $deleteEntry.className = 'delete-entry hidden';
@@ -426,8 +482,56 @@ function submitEntryForm(event) {
   showEntries();
 }
 
+function findDOMElement(ulParentElement) {
+  for (var i = 0; i < ulParentElement.children.length; i++) {
+    if (
+      parseInt(ulParentElement.children[i].dataset.entryId) === data.editing.id
+    ) {
+      return i;
+    }
+  }
+}
+
+function modifyDOMEntry(parentElement, i) {
+  var title, notes;
+  if (parentElement === $listViewUl) {
+    parentElement.children[i]
+      .querySelector('img.entry-image')
+      .setAttribute('src', data.editing.url);
+    title =
+      parentElement.children[i].firstElementChild.nextElementSibling
+        .firstElementChild;
+    title.textContent = data.editing.title;
+    notes =
+      parentElement.children[i].firstElementChild.nextElementSibling
+        .lastElementChild;
+    notes.textContent = data.editing.notes;
+  } else if (parentElement === $cardViewUl) {
+    parentElement.children[i]
+      .querySelector('img.entry-image')
+      .setAttribute('src', data.editing.url);
+    parentElement.children[
+      i
+    ].firstElementChild.nextElementSibling.firstElementChild.firstElementChild.textContent =
+      data.editing.title;
+
+    parentElement.children[
+      i
+    ].lastElementChild.firstElementChild.nextElementSibling.firstElementChild.textContent =
+      data.editing.notes;
+  }
+}
+
+function addNewestEntry(largeEntry, smallEntry) {
+  $listViewUl.prepend(largeEntry);
+  $cardViewUl.prepend(smallEntry);
+}
+
 function createNewestEntry() {
-  return createLargeEntryElements(data.entries[0]);
+  return [
+    createLargeEntryElements(data.entries[0]),
+    createSmallEntryElements(data.entries[0])
+  ];
 }
 
 function updateSrc(event) {
@@ -476,7 +580,7 @@ function createLargeEntryElements(entry) {
             contenteditable: '',
             class: 'tag-input hidden'
           }),
-          elementCreator('p', { innerText: 'Tag +', class: 'add tag' })
+          elementCreator('p', { innerText: 'Tag +', class: 'add tag regular' })
         ])
       ])
     ])
