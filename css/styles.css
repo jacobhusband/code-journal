@@ -425,8 +425,7 @@ h5 {
   margin: 0.5rem;
   border-radius: 0.25rem;
   border: 1px solid #562b80;
-  min-width: 326px;
-  max-width: 406px;
+  width: 400px;
 }
 
 .small-title {
@@ -461,8 +460,10 @@ h5 {
 }
 
 .small-image {
-  width: 100%;
-  height: 100%;
+  position: relative;
+  top: 2px;
+  width: 125px;
+  height: 125px;
   object-fit: cover;
   border-radius: 0.25rem;
   border: 1px solid #454545;

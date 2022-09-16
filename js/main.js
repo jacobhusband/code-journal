@@ -332,16 +332,18 @@ function checkEmptySpan(event) {
       event.target.nextElementSibling.className = 'add tag mini';
     } else if (event.target.className === 'tag-input') {
       event.target.className = 'tag-input hidden';
-      event.target.nextElementSibling.className = 'add tag';
+      event.target.nextElementSibling.className = 'add tag regular';
     }
   }
 }
 
 function createTag(event) {
-  var tag, tagMini, randomColor, id;
+  var tag, tagMini, randomColor, id, elements;
+  var tagContainers = [];
   var tagExists = false;
   if (event.key === 'Enter') {
     id = parseInt(event.target.closest('li').dataset.entryId);
+    elements = document.querySelectorAll(`[data-entry-id='${id}']`);
     randomColor = getDarkColor();
     event.preventDefault();
     if (event.target.className === 'tag-input') {
@@ -386,8 +388,12 @@ function createTag(event) {
       }
     }
 
-    $tagContainers[0].appendChild(tag);
-    $tagContainers[1].appendChild(tagMini);
+    for (var k = 0; k < elements.length; k++) {
+      tagContainers.push(elements[k].querySelector('.tag-container'));
+    }
+
+    tagContainers[0].appendChild(tag);
+    tagContainers[1].appendChild(tagMini);
 
     if (
       event.target.parentElement.lastElementChild.className ===
