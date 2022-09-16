@@ -19,6 +19,7 @@ var $cardViewUl = document.querySelector('ul[data-view="small-entry"]');
 var $listViewUl = document.querySelector('ul[data-view="large-entry"]');
 var $cardViewButton = document.querySelector('button.card-view');
 var $listViewButton = document.querySelector('button.list-view');
+var $tagContainers;
 
 if (data.view === 'entry-form') {
   showEntryForm();
@@ -156,8 +157,12 @@ function detectEntriesClicks(event) {
     papa = event.target.parentElement;
     id = parseInt(grandpa.closest('li').dataset.entryId);
     tagText = papa.textContent.slice(0, papa.textContent.length - 1);
-
     grandpa.removeChild(papa);
+    if (data.entriesView === 'large-entry') {
+      removeTagFromContainer($tagContainers[1], tagText);
+    } else if (data.entriesView === 'small-entry') {
+      removeTagFromContainer($tagContainers[0], tagText);
+    }
     removeTagFromData(id, tagText);
   } else if (event.target.matches('p.tag') && !event.target.matches('p.add')) {
     if (event.target.firstElementChild.className === 'del-tag hidden') {
@@ -168,16 +173,27 @@ function detectEntriesClicks(event) {
   }
 }
 
+function removeTagFromContainer(container, text) {
+  text = text + 'x';
+  var tagText;
+  for (var i = 0; i < container.children.length; i++) {
+    tagText = container.children[i].textContent;
+    if (tagText === text) {
+      container.removeChild(container.children[i]);
+      return;
+    }
+  }
+}
+
 function removeTagFromData(id, text) {
   for (var i = 0; i < data.entries.length; i++) {
     if (data.entries[i].id === id) {
       for (var j = 0; j < data.entries[i].tags.length; j++) {
         if (data.entries[i].tags[j].text === text) {
           data.entries[i].tags.splice(j, 1);
-          break;
+          return;
         }
       }
-      break;
     }
   }
 }
@@ -318,12 +334,11 @@ function checkEmptySpan(event) {
 }
 
 function createTag(event) {
-  var tag, tagMini, randomColor, tagContainers, id;
+  var tag, tagMini, randomColor, id;
   var tagExists = false;
   if (event.key === 'Enter') {
     id = parseInt(event.target.closest('li').dataset.entryId);
     randomColor = getDarkColor();
-    tagContainers = $entries.querySelectorAll('.tag-container');
     event.preventDefault();
     if (event.target.className === 'tag-input') {
       event.target.className = 'tag-input hidden';
@@ -367,8 +382,8 @@ function createTag(event) {
       }
     }
 
-    tagContainers[0].appendChild(tag);
-    tagContainers[1].appendChild(tagMini);
+    $tagContainers[0].appendChild(tag);
+    $tagContainers[1].appendChild(tagMini);
 
     if (
       event.target.parentElement.lastElementChild.className ===
@@ -430,6 +445,7 @@ function showEntries(event) {
 function loadEntriesContent() {
   createAndAddEntries($listViewUl, createLargeEntryElements);
   createAndAddEntries($cardViewUl, createSmallEntryElements);
+  $tagContainers = document.querySelectorAll('.tag-container');
 
   if (data.entriesView === 'large-entry') {
     $listViewUl.classList.remove('hidden');
