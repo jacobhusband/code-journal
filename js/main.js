@@ -1,7 +1,6 @@
 var $form = document.querySelector('form');
 var $entryImage = document.querySelector('.entry-image');
 var $photoUrl = document.querySelector('.photo-url');
-var $ul = document.querySelector('ul.entry-list');
 var $entryNav = document.querySelector('h5.entry-nav');
 var $entryForm = document.querySelector('[data-view="entry-form"]');
 var $entries = document.querySelector('[data-view="entries"]');
@@ -19,7 +18,6 @@ var $cardViewUl = document.querySelector('ul[data-view="small-entry"]');
 var $listViewUl = document.querySelector('ul[data-view="large-entry"]');
 var $cardViewButton = document.querySelector('button.card-view');
 var $listViewButton = document.querySelector('button.list-view');
-var $tagContainers;
 
 if (data.view === 'entry-form') {
   showEntryForm();
@@ -119,7 +117,8 @@ function createSmallEntryElements(entry) {
 }
 
 function detectEntriesClicks(event) {
-  var id, grandpa, papa, tagText, span;
+  var id, grandpa, papa, tagText, span, elements;
+  var tagContainers = [];
   if (event.target.matches('.edit-icon')) {
     showEntryForm();
     id = parseInt(event.target.closest('[data-entry-id]').dataset.entryId);
@@ -158,10 +157,14 @@ function detectEntriesClicks(event) {
     id = parseInt(grandpa.closest('li').dataset.entryId);
     tagText = papa.textContent.slice(0, papa.textContent.length - 1);
     grandpa.removeChild(papa);
+    elements = document.querySelectorAll(`[data-entry-id='${id}']`);
+    for (var k = 0; k < elements.length; k++) {
+      tagContainers.push(elements[k].querySelector('.tag-container'));
+    }
     if (data.entriesView === 'large-entry') {
-      removeTagFromContainer($tagContainers[1], tagText);
+      removeTagFromContainer(tagContainers[1], tagText);
     } else if (data.entriesView === 'small-entry') {
-      removeTagFromContainer($tagContainers[0], tagText);
+      removeTagFromContainer(tagContainers[0], tagText);
     }
     removeTagFromData(id, tagText);
   } else if (event.target.matches('p.tag') && !event.target.matches('p.add')) {
@@ -220,8 +223,8 @@ function filterEntries(event) {
     // If search string does not match a title or notes for a data entry object
     if (!re.test(data.entries[i].title) || !re.test(data.entries[i].notes)) {
       // Loop through each entry in the DOM
-      changeSearchEntry(dataId, boolArr, $cardViewUl, 'hidden');
-      changeSearchEntry(dataId, boolArr, $listViewUl, 'hidden');
+      changeSearchEntryClass(dataId, boolArr, $cardViewUl, 'hidden');
+      changeSearchEntryClass(dataId, boolArr, $listViewUl, 'hidden');
     }
 
     // If search string matches a title or note for a data entry object
@@ -231,13 +234,13 @@ function filterEntries(event) {
       !boolArr.some(x => x - 1)
     ) {
       // Loop through each entry in the DOM
-      changeSearchEntry(dataId, boolArr, $cardViewUl, 'row card-format');
-      changeSearchEntry(dataId, boolArr, $listViewUl, 'row');
+      changeSearchEntryClass(dataId, boolArr, $cardViewUl, 'row card-format');
+      changeSearchEntryClass(dataId, boolArr, $listViewUl, 'row');
     }
   }
 }
 
-function changeSearchEntry(id, arr, parent, className) {
+function changeSearchEntryClass(id, arr, parent, className) {
   var entryId;
   for (var j = 0; j < parent.children.length; j++) {
     entryId = parseInt(parent.children[j].dataset.entryId);
@@ -298,7 +301,8 @@ function handleModalAction(event) {
     $modalConfirmation.className = 'confirmation-modal-container hidden';
     for (var i = 0; i < data.entries.length; i++) {
       if (data.entries[i].id === data.editing.id) {
-        removeEntry(data.entries[i].id);
+        removeEntry(data.entries[i].id, $cardViewUl);
+        removeEntry(data.entries[i].id, $listViewUl);
         data.entries.splice(i, 1);
         data.editing = null;
         showEntries();
@@ -312,10 +316,10 @@ function handleModalAction(event) {
   }
 }
 
-function removeEntry(id) {
-  for (var i = 0; i < $ul.children.length; i++) {
-    if (parseInt($ul.children[i].dataset.entryId) === id) {
-      $ul.removeChild($ul.children[i]);
+function removeEntry(id, parent) {
+  for (var i = 0; i < parent.children.length; i++) {
+    if (parseInt(parent.children[i].dataset.entryId) === id) {
+      parent.removeChild(parent.children[i]);
       break;
     }
   }
@@ -455,7 +459,6 @@ function showEntries(event) {
 function loadEntriesContent() {
   createAndAddEntries($listViewUl, createLargeEntryElements);
   createAndAddEntries($cardViewUl, createSmallEntryElements);
-  $tagContainers = document.querySelectorAll('.tag-container');
 
   if (data.entriesView === 'large-entry') {
     $listViewUl.classList.remove('hidden');
