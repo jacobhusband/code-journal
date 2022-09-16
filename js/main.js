@@ -203,7 +203,7 @@ function filterEntries(event) {
   var re = new RegExp(event.target.value, 'i');
   var words = event.target.value.split(' ');
 
-  var tags, boolArr, entryId, dataId, title, notes;
+  var tags, boolArr, dataId, title, notes;
 
   // Go through each data entry object
 
@@ -220,13 +220,8 @@ function filterEntries(event) {
     // If search string does not match a title or notes for a data entry object
     if (!re.test(data.entries[i].title) || !re.test(data.entries[i].notes)) {
       // Loop through each entry in the DOM
-      for (var j = 0; j < $ul.children.length; j++) {
-        entryId = parseInt($ul.children[j].dataset.entryId);
-        if (entryId === dataId && boolArr.some(x => x - 1)) {
-          // Hide that entry
-          $ul.children[j].className = 'hidden';
-        }
-      }
+      changeSearchEntry(dataId, boolArr, $cardViewUl, 'hidden');
+      changeSearchEntry(dataId, boolArr, $listViewUl, 'hidden');
     }
 
     // If search string matches a title or note for a data entry object
@@ -236,13 +231,22 @@ function filterEntries(event) {
       !boolArr.some(x => x - 1)
     ) {
       // Loop through each entry in the DOM
-      for (var p = 0; p < $ul.children.length; p++) {
-        entryId = parseInt($ul.children[p].dataset.entryId);
-        // If the DOM entry matches the data entry
-        if (entryId === dataId) {
-          // Make the DOM entry visible
-          $ul.children[p].className = 'row';
-        }
+      changeSearchEntry(dataId, boolArr, $cardViewUl, 'row card-format');
+      changeSearchEntry(dataId, boolArr, $listViewUl, 'row');
+    }
+  }
+}
+
+function changeSearchEntry(id, arr, parent, className) {
+  var entryId;
+  for (var j = 0; j < parent.children.length; j++) {
+    entryId = parseInt(parent.children[j].dataset.entryId);
+    if (entryId === id) {
+      // Hide that entry
+      if (arr.some(x => x - 1)) {
+        parent.children[j].className = className;
+      } else if (!arr.some(x => x - 1)) {
+        parent.children[j].className = className;
       }
     }
   }
