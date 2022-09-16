@@ -256,10 +256,26 @@ h5 {
   transition: box-shadow 0.1s linear 0.1s;
 }
 
+.list-view-container {
+  margin-left: auto;
+}
+
+.card-view-container {
+  margin-left: 1rem;
+}
+
+.list-view,
+.card-view {
+  font-size: 1rem;
+  padding: 0.25rem 1rem;
+}
+
 .search-container:hover,
 .edit-icon:hover,
 .new-entry:hover,
-.add:hover {
+.add:hover,
+.list-view:hover,
+.card-view:hover {
   cursor: pointer;
   border: 1px solid rgb(84, 27, 128);
   box-shadow: 2px 2px 3px 0.2px rgba(0, 0, 0, 0.2);
@@ -358,6 +374,11 @@ h5 {
   flex-wrap: wrap;
 }
 
+.small-edit {
+  width: 1.5rem;
+  right: -6px;
+}
+
 .del-tag {
   padding-left: 0.5rem;
 }
@@ -384,6 +405,81 @@ h5 {
 
 .mt-1r {
   margin-top: 1rem;
+}
+
+.mtb-075r {
+  margin: 0.75rem 0;
+}
+
+.mw-75pc {
+  max-width: 75%;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.card-format {
+  background-color: white;
+  padding: 0.5rem;
+  margin: 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid #562b80;
+  width: 400px;
+}
+
+.small-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.2rem 0.5rem 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.small-notes {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  max-height: 3rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  margin: 0 0.5rem;
+}
+
+.small-tags {
+  margin: 0.25rem 0.5rem;
+}
+
+.mini {
+  font-size: 0.7rem;
+  min-width: 1rem;
+  margin: 0;
+  margin-top: 0.2rem;
+  margin-right: 0.5rem;
+  padding: 0.1rem 0.3rem;
+}
+
+.small-image {
+  position: relative;
+  top: 2px;
+  width: 125px;
+  height: 125px;
+  object-fit: cover;
+  border-radius: 0.25rem;
+  border: 1px solid #454545;
+  margin-bottom: 0;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.mini-span {
+  font-size: 0.75rem;
+  min-height: 0;
+  top: -1px;
 }
 
 @media screen and (min-width: 768px) {

@@ -18,9 +18,21 @@
   width: 100%;
 }
 
+.column-third {
+  width: calc(100%/3);
+}
+
+.column-two-thirds {
+  width: calc(200%/3);
+}
+
 @media screen and (min-width: 768px) {
   .container {
     max-width: 900px;
+  }
+
+  .content-container {
+    max-width: 1200px;
   }
 
   .column-full,

@@ -100,10 +100,10 @@
             </div>
           </form>
         </div>
-        <div data-view="entries" class="hidden">
+        <div data-view="entries" class="hidden" id="entries">
           <div class="row">
             <div class="column-full">
-              <div class="row mb-1r mt-1r nowrap">
+              <div class="row mt-1r nowrap">
                 <h2>Entries</h2>
                 <div class="search-box-container">
                   <input type="text" name="search" id="entry-search" class="" />
@@ -115,9 +115,21 @@
                   <button class="new-entry">NEW</button>
                 </div>
               </div>
+              <div class="row mtb-075r">
+                <div class="list-view-container">
+                  <button class="list-view">LIST VIEW</button>
+                </div>
+                <div class="card-view-container">
+                  <button class="card-view">CARD VIEW</button>
+                </div>
+              </div>
             </div>
           </div>
-          <ul class="entry-list"></ul>
+          <ul data-view="large-entry" class="entry-list hidden"></ul>
+          <ul
+            data-view="small-entry"
+            class="entry-list row justify-center hidden"
+          ></ul>
         </div>
       </div>
     </main>
