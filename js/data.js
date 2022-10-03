@@ -9,8 +9,14 @@ var data = {
   entriesView: 'large-entry'
 };
 
-if (localStorage.getItem('data')) {
-  pushLocalStorage();
+var dataInside = JSON.parse(localStorage.getItem('data'));
+
+if (
+  dataInside.view &&
+  dataInside.entriesView &&
+  typeof dataInside.entries === 'object'
+) {
+  getLocalStorage();
 }
 
 window.addEventListener('beforeunload', addToLocalStorage);
@@ -19,6 +25,6 @@ function addToLocalStorage(event) {
   localStorage.setItem('data', JSON.stringify(data));
 }
 
-function pushLocalStorage() {
+function getLocalStorage() {
   data = JSON.parse(localStorage.getItem('data'));
 }
