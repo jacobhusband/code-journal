@@ -1,5 +1,15 @@
 /* exported data */
 
+window.addEventListener('beforeunload', addToLocalStorage);
+window.addEventListener('pagehide', addToLocalStorage);
+
+function addToLocalStorage(event) {
+  localStorage.setItem('data', JSON.stringify(data));
+}
+
+var badData = false;
+var grabbedData = JSON.parse(localStorage.getItem('data'));
+
 var data = {
   view: 'entry-form',
   entries: [],
@@ -9,22 +19,16 @@ var data = {
   entriesView: 'large-entry'
 };
 
-var dataInside = JSON.parse(localStorage.getItem('data'));
-
-if (
-  dataInside.view &&
-  dataInside.entriesView &&
-  typeof dataInside.entries === 'object'
-) {
-  getLocalStorage();
+for (var key in grabbedData) {
+  if (
+    data[key] === undefined ||
+    Object.keys(data).length !== Object.keys(grabbedData).length
+  ) {
+    badData = true;
+    break;
+  }
 }
 
-window.addEventListener('beforeunload', addToLocalStorage);
-
-function addToLocalStorage(event) {
-  localStorage.setItem('data', JSON.stringify(data));
-}
-
-function getLocalStorage() {
-  data = JSON.parse(localStorage.getItem('data'));
+if (!badData) {
+  data = grabbedData;
 }
